@@ -3,6 +3,9 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Reading data from appsetting.json file
+var externalUrl = builder.Configuration.GetValue<string>("angularApplicationUrl");
+
 // Add services to the container.
 
 builder.Services.AddControllers();
@@ -28,7 +31,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 
 //assigning policy for Cross Origin Response
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("angularApplicationUrl"));
+app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(externalUrl));
 
 app.UseAuthorization();
 
