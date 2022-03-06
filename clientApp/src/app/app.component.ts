@@ -17,6 +17,9 @@ export class AppComponent implements OnInit {
     this.getUsers();
   }
 
+
+
+  user :any;
   getUsers(){
     this.http.get(environment.dotnetUrl.toString() + '/api/users').subscribe(response => {
       this.users = response;
