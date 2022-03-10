@@ -12,5 +12,8 @@ namespace DatingApp.Entities
 
         [Required]
         public string UserName { get; set; } = null!;
+
+        public byte[] HashedPassword { get; set; }
+        public byte[] SaltPassword { get; set; }
     }
 }
