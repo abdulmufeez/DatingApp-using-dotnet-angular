@@ -27,6 +27,7 @@ namespace DatingApp.Services
             var claims = new List<Claim>
             {
                 new Claim(JwtRegisteredClaimNames.NameId, user.UserName)
+                //new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName)
             };
             //these portion is for which things can an application claims to server
 
@@ -42,7 +43,7 @@ namespace DatingApp.Services
             //things in token and how it look like
 
             var tokenHandler = new JwtSecurityTokenHandler();
-            //it is for reading and ceating tokens
+            //it is for reading and ceating tokens, initilizing token basically
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
             //token creation

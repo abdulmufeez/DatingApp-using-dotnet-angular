@@ -70,6 +70,8 @@ namespace DatingApp.Controllers
                 Token = _tokenService.CreateToken(user)
             };
         }
+
+        //checking if username is already exist
         private async Task<bool> UserExists(string username) 
             => await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
    }
