@@ -76,6 +76,9 @@
               "browserTarget": "clientApp:build:production"
             },
             "development": {
+              "sslKey": "./ssl/server.key",
+              "sslCert": "./ssl/server.crt",
+              "ssl": true,
               "browserTarget": "clientApp:build:development"
             }
           },
