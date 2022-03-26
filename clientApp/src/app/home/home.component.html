@@ -1,0 +1,28 @@
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<br/>
+<div class="container mt-5">
+    <div *ngIf="!registerMode" style="text-align:center">
+        <h1>Find Your Match</h1>
+        <p class="lead">Lorem ipsum dolor sit amet consectetur, adipisicing elit. 
+            Tenetur sunt quaerat consectetur fugit atque obcaecati itaque libero necessitatibus id. 
+            Magni officia consequuntur aperiam cum quibusdam praesentium voluptates nam, laborum similique.
+        </p>
+        <p>All you need to do is sign up, rest is on us.</p>
+        <div class="text-center">
+            <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-2" style="margin-right: 10px;">Sign Up</button>
+            <button class="btn btn-default btn-lg">Learn more..</button>
+        </div>
+    </div>
+
+    <div *ngIf="registerMode" class="container">
+        <div class="row jusitify-content-center">            
+                <div class="col-5" style="margin-left:auto; margin-right: auto;">
+                    <app-register-form (cancelRegister)="cancelRegister($event)"></app-register-form>
+                </div>        
+        </div>
+    </div>
+</div>

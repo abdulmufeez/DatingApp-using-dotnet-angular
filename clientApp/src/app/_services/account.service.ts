@@ -22,6 +22,19 @@ export class AccountService {
           localStorage.setItem('user.info', JSON.stringify(user));
           this.currentUserSource.next(user);    //assinging user
         }
+        return user;
+      })
+    )
+  }
+
+  register(model: any){
+    return this.http.post<User>(this.baseUrl + '/api/account/register', model).pipe(
+      map ((user: User) =>{        
+        if (user) {
+          localStorage.setItem('user.info', JSON.stringify(user));
+          this.currentUserSource.next(user);    
+        }
+        return user;
       })
     )
   }

@@ -10,13 +10,12 @@ import { AccountService } from '../_services/account.service';
   ]
 })
 export class NavbarComponent implements OnInit {
-model: any = {}   //initilize empty object with dynamic type
-currentUser$ : Observable<User>;
+  model: any = {}   //initilize empty object with dynamic type
 
-  constructor(private accountService: AccountService) { };
+  constructor(public accountService: AccountService) { };
 
   ngOnInit(): void {
-    this.currentUser$ = this.accountService.currentUser$;
+
   }
 
   login(){
