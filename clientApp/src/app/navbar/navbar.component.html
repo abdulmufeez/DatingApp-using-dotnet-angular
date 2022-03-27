@@ -1,6 +1,6 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" >
     <div class="container">
-      <a class="navbar-brand" href="#">Dating App</a>
+      <a class="navbar-brand" routerLink="/" routerLinkActive='active'>Dating App</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
@@ -10,13 +10,13 @@
             <a class="nav-link active" aria-current="page" href="#">Home</a>
           </li> -->
           <li class="nav-item">
-            <a class="nav-link" href="#">Matches</a>
+            <a class="nav-link" routerLink="/members" routerLinkActive="active" >Matches</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">List</a>
+            <a class="nav-link" routerLink="/lists" routerLinkActive="active">List</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Messages</a>
+            <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
           </li>
         </ul>                
 
@@ -36,11 +36,12 @@
           </ul>
         </div>
         
-        <form #loginForm="ngForm" class="d-flex container" style="margin-left:30rem;" (ngSubmit)="login()" autocomplete="off" *ngIf="!(accountService.currentUser$ | async)">
+        <form #loginForm="ngForm" class="d-flex" style="margin-left:auto" (ngSubmit)="login()" autocomplete="off" *ngIf="!(accountService.currentUser$ | async)">
           <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text" placeholder="Username" />
           <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password" placeholder="Password" />
-          <button class="btn btn-outline-success" type="submit">Login</button>
-        </form>
+          <button class="btn btn-outline-success me-2" type="submit">Login</button>
+          <a class="btn btn-outline-success me-2" (click)="registerToggle()">Register</a>
+        </form>        
       </div>
     </div>
   </nav>
