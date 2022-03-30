@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark" >
+<nav class="navbar navbar-expand-md fixed-top navbar-dark bg-primary" >
     <div class="container">
       <a class="navbar-brand" routerLink="/" routerLinkActive='active'>Dating App</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
@@ -20,10 +20,10 @@
           </li>
         </ul>                
 
-        <div class="btn-group d-flex"  dropdown *ngIf="accountService.currentUser$ | async">
+        <div class="btn-group d-flex"  dropdown *ngIf="(accountService.currentUser$ | async) as user">
           <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle text-white"
                   aria-controls="dropdown-basic">
-            Welcome User <span class="caret"></span>
+            Welcome {{user.username | titlecase}} <span class="caret"></span>
           </a>
           <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu mt-3"
               role="menu" aria-labelledby="button-basic">
@@ -39,8 +39,8 @@
         <form #loginForm="ngForm" class="d-flex" style="margin-left:auto" (ngSubmit)="login()" autocomplete="off" *ngIf="!(accountService.currentUser$ | async)">
           <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text" placeholder="Username" />
           <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password" placeholder="Password" />
-          <button class="btn btn-outline-success me-2" type="submit">Login</button>
-          <a class="btn btn-outline-success me-2" (click)="registerToggle()">Register</a>
+          <button class="btn text-white btn-secondary btn-outline-success me-2" type="submit">Login</button>
+          <a class="btn btn-secondary btn-outline-success me-2" (click)="registerToggle()">Register</a>
         </form>        
       </div>
     </div>
