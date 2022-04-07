@@ -1,12 +1,8 @@
-using System.Text;
 using DatingApp.Data;
 using DatingApp.Extensions;
-using DatingApp.Interfaces;
 using DatingApp.Middlewares;
-using DatingApp.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -29,11 +25,29 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-// if (app.Environment.IsDevelopment())
-// {
-//     app.UseSwagger();
-//     app.UseSwaggerUI();
-// }
+
+
+//======================================================================
+//this section is used for data seeding 
+//
+//creating a service container which call any service running already in application
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+//
+try
+{
+    //calling datacontect service
+    var context = services.GetRequiredService<DataContext>();
+    await context.Database.MigrateAsync();
+    //seeding data 
+    await Seed.SeedUserProfiles(context);
+}
+catch (Exception ex)
+{
+    //calling logger service
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, "An error occurred while seeding user profile");
+}
 
 //using custom middleware for exceptions
 app.UseMiddleware<ExceptionMiddleware>();
