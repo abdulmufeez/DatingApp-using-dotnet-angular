@@ -12,6 +12,7 @@ namespace DatingApp.Data
         public DataContext(DbContextOptions options) : base(options)
         {
         }        
-        public DbSet<ApplicationUser> Users => Set<ApplicationUser>();
+        public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
+        public DbSet<UserProfile> UserProfile { get; set; }
     }
 }

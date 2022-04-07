@@ -39,7 +39,7 @@ namespace DatingApp.Controllers
                 SaltPassword = hmac.Key
             };
 
-            _context.Users.Add(user);
+            _context.ApplicationUser.Add(user);
             await _context.SaveChangesAsync();
 
             return new UserDto
@@ -52,7 +52,7 @@ namespace DatingApp.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<UserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+            var user = await _context.ApplicationUser.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
 
             if (user == null) return Unauthorized("Invalid Username");
 
@@ -73,6 +73,6 @@ namespace DatingApp.Controllers
 
         //checking if username is already exist
         private async Task<bool> UserExists(string username) 
-            => await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
+            => await _context.ApplicationUser.AnyAsync(user => user.UserName == username.ToLower());
    }
 }

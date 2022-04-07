@@ -24,7 +24,7 @@ namespace DatingApp.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.ApplicationUser.ToListAsync();
         }
 
         //api/user/2
@@ -32,7 +32,7 @@ namespace DatingApp.Controllers
         [Authorize]
         public async Task<ActionResult<ApplicationUser>> GetUser(int id) 
         {
-            var userInDb = await _context.Users.FindAsync(id);
+            var userInDb = await _context.ApplicationUser.FindAsync(id);
             return userInDb;
         }
     }
