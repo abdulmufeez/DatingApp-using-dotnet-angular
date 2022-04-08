@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
-using DatingApp.Extensions;
+using DatingApp.Entities;
 
-namespace DatingApp.Entities
+namespace DatingApp.DTOs
 {
-    public class UserProfile
+    public class UserProfileDto
     {
         public int Id { get; set; }
         [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public DateTime DateOfBirth { get; set; }
+        public int Age { get; set; }
         [Required]
         public string KnownAs { get; set; }
         public DateTime ProfileCreatedAt { get; set; } = DateTime.Now;
@@ -28,13 +28,7 @@ namespace DatingApp.Entities
         public string Country { get; set; }
         [Required]
         public string City { get; set; }
-        public ICollection<Photo> Photos { get; set; }  
-
-        public ApplicationUser ApplicationUser { get; set; }      
+        public ICollection<PhotoDto> Photos { get; set; }          
         public int ApplicationUserId { get; set; }
-
-        public int GetAge(){
-            return DateOfBirth.CalculateAge();
-        }
     }
 }

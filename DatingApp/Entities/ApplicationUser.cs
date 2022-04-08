@@ -13,7 +13,7 @@ namespace DatingApp.Entities
 
         [Required]
         public string Email { get; set; }
-        public DateOnly CreatedAt { get; set; } = DateOnly.FromDateTime(DateTime.Now);
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public byte[] HashedPassword { get; set; }
         public byte[] SaltPassword { get; set; }        
     }

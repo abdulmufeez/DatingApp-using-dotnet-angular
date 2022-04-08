@@ -1,39 +1,32 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DatingApp.Data;
 using DatingApp.Entities;
+using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Controllers
 {    
+    [Authorize]
     public class UsersController : BaseController
-    {
-        private readonly DataContext _context;
+    {        
+        private readonly IUserProfileRepository _userProfileRepository;
 
-        public UsersController(DataContext context)
+        public UsersController(IUserProfileRepository userProfileRepository)
         {
-            _context = context;
+            _userProfileRepository = userProfileRepository;
         }
 
         // api/users
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<ActionResult<IEnumerable<ApplicationUser>>> GetUsers()
+        [HttpGet]        
+        public async Task<ActionResult<IEnumerable<UserProfile>>> GetUsers()
         {
-            return await _context.ApplicationUser.ToListAsync();
+            return Ok(await _userProfileRepository.GetUserProfilesAsync());
         }
 
         //api/user/2
-        [HttpGet("{id}")]
-        [Authorize]
-        public async Task<ActionResult<ApplicationUser>> GetUser(int id) 
-        {
-            var userInDb = await _context.ApplicationUser.FindAsync(id);
-            return userInDb;
+        [HttpGet("{knownas}")]        
+        public async Task<ActionResult<UserProfile>> GetUser(string knownas) 
+        {            
+            return await _userProfileRepository.GetUserProfileByUserNameAsync(knownas);
         }
     }
 }

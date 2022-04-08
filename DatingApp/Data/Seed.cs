@@ -23,9 +23,9 @@ namespace DatingApp.Data
             //adding to database schema
             foreach (var userProfile in userProfiles)
             {                                
-                userProfile.ProfileCreatedAt = DateOnly.FromDateTime(DateTime.Now);
-                userProfile.DateOfBirth = DateOnly.FromDateTime(RandomDayFunc()());
-                userProfile.LastActive = RandomDayFunc()();
+                // userProfile.ProfileCreatedAt = DateTime.Now;
+                // userProfile.DateOfBirth = RandomDayFunc()();
+                // userProfile.LastActive = RandomDayFunc()();
 
                 userProfile.ApplicationUserId = 1;
                 _context.UserProfile.Add(userProfile);
