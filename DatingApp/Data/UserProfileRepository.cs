@@ -20,7 +20,7 @@ namespace DatingApp.Data
         public async Task<UserProfile> GetUserProfileByUserNameAsync(string knownas)
         {
             return await _context.UserProfile
-                .Include(p => p.Photos)
+                .Include(p => p.Photos)                
                 .SingleOrDefaultAsync(x => x.KnownAs == knownas);
         }
 
