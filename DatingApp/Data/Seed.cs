@@ -17,7 +17,7 @@ namespace DatingApp.Data
             if (await _context.UserProfile.AnyAsync()) return;
 
             //reading data from a json file
-            var userProfileData = await System.IO.File.ReadAllTextAsync("Data/UserProfileSeedData.json");
+            var userProfileData = await System.IO.File.ReadAllTextAsync("Data/SeedData/UserProfileSeedData.json");
             var userProfiles = JsonSerializer.Deserialize<List<UserProfile>>(userProfileData);
 
             //adding to database schema

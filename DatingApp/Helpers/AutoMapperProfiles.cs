@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.DTOs;
 using DatingApp.Entities;
+using DatingApp.Extensions;
 
 namespace DatingApp.Helpers
 {
@@ -17,7 +18,8 @@ namespace DatingApp.Helpers
             CreateMap<UserProfile, UserProfileDto>()
                 // Configuring automapper so that it pick property from child class and assign it to parent class
                 .ForMember(destination => destination.MainPhotoUrl, 
-                options => options.MapFrom(source => source.Photos.FirstOrDefault(p => p.IsMain).Url));
+                options => options.MapFrom(source => source.Photos.FirstOrDefault(p => p.IsMain).Url))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
             CreateMap<Photo, PhotoDto>();
         }
     }

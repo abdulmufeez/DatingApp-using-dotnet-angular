@@ -1,3 +1,4 @@
+using DatingApp.DTOs;
 using DatingApp.Entities;
 
 namespace DatingApp.Interfaces
@@ -5,8 +6,8 @@ namespace DatingApp.Interfaces
     public interface IUserProfileRepository
     {
         Task<UserProfile> GetUserProfileByIdAsync(int id);
-        Task<UserProfile> GetUserProfileByUserNameAsync(string username);
-        Task<IEnumerable<UserProfile>> GetUserProfilesAsync();
+        Task<UserProfileDto> GetUserProfileByUserNameAsync(string username);
+        Task<IEnumerable<UserProfileDto>> GetUserProfilesAsync();
         void Update(UserProfile userProfile);
         Task<bool> SaveAllAsync();
     }

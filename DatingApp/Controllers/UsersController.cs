@@ -23,16 +23,14 @@ namespace DatingApp.Controllers
         [HttpGet]        
         public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetUsers()
         {
-            var usersProfiles = await _userProfileRepository.GetUserProfilesAsync();
-            return Ok(_mapper.Map<IEnumerable<UserProfileDto>>(usersProfiles));
+           return Ok( await _userProfileRepository.GetUserProfilesAsync());
         }
 
         //api/user/2
         [HttpGet("{knownas}")]        
         public async Task<ActionResult<UserProfileDto>> GetUser(string knownas) 
         {            
-            var userProfile = await _userProfileRepository.GetUserProfileByUserNameAsync(knownas);
-            return _mapper.Map<UserProfileDto>(userProfile);
+            return await _userProfileRepository.GetUserProfileByUserNameAsync(knownas);
         }
     }
 }
