@@ -13,6 +13,7 @@ namespace DatingApp.DTOs
         [Required]
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string MainPhotoUrl { get; set; }
         public int Age { get; set; }
         [Required]
         public string KnownAs { get; set; }

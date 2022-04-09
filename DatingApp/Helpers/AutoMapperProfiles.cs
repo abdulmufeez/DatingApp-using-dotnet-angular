@@ -14,7 +14,10 @@ namespace DatingApp.Helpers
         {
             // Telling mapper to map to sourcae to destination object
             // <Source => Destination>
-            CreateMap<UserProfile, UserProfileDto>();
+            CreateMap<UserProfile, UserProfileDto>()
+                // Configuring automapper so that it pick property from child class and assign it to parent class
+                .ForMember(destination => destination.MainPhotoUrl, 
+                options => options.MapFrom(source => source.Photos.FirstOrDefault(p => p.IsMain).Url));
             CreateMap<Photo, PhotoDto>();
         }
     }

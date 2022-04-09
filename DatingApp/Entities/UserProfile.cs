@@ -33,6 +33,7 @@ namespace DatingApp.Entities
         public ApplicationUser ApplicationUser { get; set; }      
         public int ApplicationUserId { get; set; }
 
+        // automapper automatically use this function and assign int value to the property
         public int GetAge(){
             return DateOfBirth.CalculateAge();
         }
