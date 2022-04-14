@@ -29,6 +29,7 @@ namespace DatingApp.Controllers
         public async Task<ActionResult<UserDto>> Register(RegisterDto registerDto)
         {
             if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
+            if (await UserEmailExists(registerDto.Email)) return BadRequest("Email is already taken");
         
             using var hmac = new HMACSHA512();
 
@@ -75,5 +76,8 @@ namespace DatingApp.Controllers
         //checking if username is already exist
         private async Task<bool> UserExists(string username) 
             => await _context.ApplicationUser.AnyAsync(user => user.UserName == username.ToLower());
+
+        private async Task<bool> UserEmailExists(string email)
+            => await _context.ApplicationUser.AnyAsync(user => user.Email == email);
    }
 }

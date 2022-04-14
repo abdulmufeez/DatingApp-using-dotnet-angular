@@ -4,7 +4,7 @@
 
 export const environment = {
   production: false,
-  dotnetUrl: 'https://localhost:7297'
+  dotnetUrl: 'https://localhost:7297/api/'
 };
 
 /*
