@@ -24,10 +24,10 @@ namespace DatingApp.Data
 
         // project to automatically map to dto leaving one further asign thing behind 
         // and there is also no need to use include or anything
-        public async Task<UserProfileDto> GetUserProfileByUserNameAsync(string username)
+        public async Task<UserProfileDto> GetUserProfileByUserNameAsync(string knownas)
         {
             return await _context.UserProfile
-                .Where(x => x.KnownAs == username)
+                .Where(x => x.KnownAs == knownas)
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
                 .SingleOrDefaultAsync();
         }
