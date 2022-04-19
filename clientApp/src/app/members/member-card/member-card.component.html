@@ -1,9 +1,9 @@
 <div class="card mb-4">
-    <a routerLink='/members/{{member.knownAs}}'>
+    <a routerLink='/member/{{member.knownAs}}'>
         <div class="card-img-wrapper">
             <img src="{{member.mainPhotoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" class="card-img-top">
             <ul class="list-inline text-center member-icons animate">
-                <li class="list-inline-item"><button routerLink='/members/{{member.knownAs}}' class="btn btn-primary"><i
+                <li class="list-inline-item"><button routerLink='/member/{{member.knownAs}}' class="btn btn-primary"><i
                             class="fa fa-user"></i></button></li>
                 <li class="list-inline-item"><button class="btn btn-secondary"><i class="fa fa-heart"></i></button></li>
                 <li class="list-inline-item"><button class="btn btn-warning"><i class="fa fa-envelope"></i></button>

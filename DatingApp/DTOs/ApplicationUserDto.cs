@@ -5,8 +5,9 @@ using System.Threading.Tasks;
 
 namespace DatingApp.DTOs
 {
-    public class UserDto
+    public class ApplicationUserDto
     {
+        public int Id { get; set; }
         public string Username { get; set; }
         public string Token { get; set; }
     }
