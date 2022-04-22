@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using AutoMapper;
 using DatingApp.DTOs;
 using DatingApp.Entities;
@@ -27,10 +28,28 @@ namespace DatingApp.Controllers
         }
 
         //api/user/2
-        [HttpGet("{knownas}")]        
-        public async Task<ActionResult<UserProfileDto>> GetUser(string knownas) 
+        [HttpGet("{id}")]        
+        public async Task<ActionResult<UserProfileDto>> GetUser(int id) 
         {            
-            return await _userProfileRepository.GetUserProfileByUserNameAsync(knownas);
+            return await _userProfileRepository.GetUserProfileByIdAsync(id);
+        }
+
+        [HttpGet("edit/{id}")]
+        public async Task<ActionResult<UserProfileDto>> GetUserByAppId(int id){
+            return await _userProfileRepository.GetUserProfileByAppIdAsync(id);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult> UpdateUser(UserProfileUpdateDto userProfileUpdateDto){
+            var user = await _userProfileRepository.GetUserByIdAsync(userProfileUpdateDto.Id);
+
+            _mapper.Map(userProfileUpdateDto, user);
+
+            _userProfileRepository.Update(user);
+
+            if (await _userProfileRepository.SaveAllAsync()) return NoContent();
+
+            return BadRequest(); 
         }
     }
 }

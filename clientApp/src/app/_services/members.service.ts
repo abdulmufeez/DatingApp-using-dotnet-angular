@@ -22,7 +22,15 @@ export class MembersService {
     return this.http.get<Member[]>(this.baseUrl + 'users');
   }
 
-  getMember(knownas: string){
-    return this.http.get<Member>(this.baseUrl + 'users/' + knownas);
+  getMember(id: string){
+    return this.http.get<Member>(this.baseUrl + 'users/' + id);
+  }
+
+  getMemberByAppId(appId: string){
+    return this.http.get<Member>(this.baseUrl + 'users/edit/' + appId);
+  }
+
+  updateMember(member: Member){
+    return this.http.put(this.baseUrl + 'users', member);
   }
 }

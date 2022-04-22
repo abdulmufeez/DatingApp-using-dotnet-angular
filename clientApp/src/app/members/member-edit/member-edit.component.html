@@ -1,3 +1,94 @@
-<p>member-edit works!</p>
-<h1>{{user.username}}</h1>
-<h1>{{user.id}}</h1>
+<div class="row" *ngIf="member">
+    <div class="col-4">
+        <h1>Your Profile</h1>
+    </div>
+    <div class="col-8">
+        <div class="alert alert-info" *ngIf="editForm.dirty">
+            <strong>Information: </strong> You have made changes, if not saved, changes will be lost
+        </div>
+    </div>
+    <div class="col-4 mt-5">
+        <div class="card">
+            <img src="{{member.mainPhotoUrl || './assets/user.png'}}" alt="{{member.knownAs}}"
+                class="card-img-top img-thumbnail">
+            <div class="card-body">
+                <div>
+                    <strong>User Name:</strong>
+                    <p>{{user.username}}</p>
+                </div>
+                <div>
+                    <strong>Age:</strong>
+                    <p>{{member.age}}</p>
+                </div>
+                <div>
+                    <strong>Last Active:</strong>
+                    <p>{{member.lastActive}}</p>
+                </div>
+                <div>
+                    <strong>Member Since:</strong>
+                    <p>{{member.profileCreatedAt}}</p>
+                </div>
+            </div>
+            <div class="card-footer">
+                <button [disabled]="!editForm.dirty" form="editForm" type="submit" class="btn btn-info btn-block form-control">Save Changes</button>
+            </div>
+        </div>
+    </div>
+    <div class="col-8">
+        <tabset class="member-tabset">
+            <tab heading='Edit Profile'>
+                <form #editForm="ngForm" (ngSubmit)="updateMember()" id="editForm">
+                    <div class="row mt-2 form-group form-inline">
+                        <h5>Personal Details</h5>
+                        <div class="col-md-6">
+                            <label for="firstName">First Name:</label>
+                            <input [(ngModel)]="member.firstName" type="text" name="firstName" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName">Last Name:</label>
+                            <input [(ngModel)]="member.lastName" type="text" name="lastName" class="form-control">
+                        </div>
+                        <div class="mt-2"></div>
+                        <div class="col-md-6">
+                            <label for="lastName">Known As:</label>
+                            <input [(ngModel)]="member.knownAs" type="text" name="knownAs" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="lastName">Gender:</label>
+                            <input [(ngModel)]="member.gender" type="text" name="gender" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row mt-2 form-group form-inline">
+                        <h5>Location Details</h5>
+                        <div class="col-md-6">
+                            <label for="city">City:</label>
+                            <input [(ngModel)]="member.city" type="text" name="city" class="form-control">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="country">Country:</label>
+                            <input [(ngModel)]="member.country" type="text" name="country" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mt-2 form-group">
+                        <h5>Description</h5>
+                        <textarea [(ngModel)]="member.introduction" name="introduction" class="form-control"
+                            rows="2"></textarea>
+                    </div>
+                    <div class="mt-2 form-group">
+                        <h5>Looking For</h5>
+                        <textarea [(ngModel)]="member.lookingFor" name="lookingFor" class="form-control"
+                            rows="2"></textarea>
+                    </div>
+                    <div class="mt-2 form-group">
+                        <h5>Interests</h5>
+                        <textarea [(ngModel)]="member.interests" name="interests" class="form-control"
+                            rows="2"></textarea>
+                    </div>
+                </form>
+            </tab>
+            <tab heading='Edit Photos'>
+                <h4>Photos of {{member.knownAs}}</h4>
+            </tab>
+        </tabset>
+    </div>
+</div>

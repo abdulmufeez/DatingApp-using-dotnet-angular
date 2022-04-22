@@ -17,21 +17,28 @@ namespace DatingApp.Data
             _context = context;
             _mapper = mapper;
         }
-        public async Task<UserProfile> GetUserProfileByIdAsync(int id)
+
+        public async Task<UserProfile> GetUserByIdAsync(int id)
         {
             return await _context.UserProfile.FindAsync(id);
         }
 
-        // project to automatically map to dto leaving one further asign thing behind 
-        // and there is also no need to use include or anything
-        public async Task<UserProfileDto> GetUserProfileByUserNameAsync(string knownas)
+        public async Task<UserProfileDto> GetUserProfileByAppIdAsync(int id)
         {
-            return await _context.UserProfile
-                .Where(x => x.KnownAs == knownas)
+            return await _context.UserProfile                
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync();
+                .SingleOrDefaultAsync(model => model.ApplicationUserId == id);
         }
 
+        public async Task<UserProfileDto> GetUserProfileByIdAsync(int id)
+        {
+            return await _context.UserProfile
+                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
+                .SingleOrDefaultAsync(model => model.Id == id);
+        }
+
+        // project to automatically map to dto leaving one further asign thing behind 
+        // and there is also no need to use include or anything
         public async Task<IEnumerable<UserProfileDto>> GetUserProfilesAsync()
         {
             return await _context.UserProfile
@@ -48,7 +55,7 @@ namespace DatingApp.Data
         public void Update(UserProfile userProfile)
         {
             _context.Entry(userProfile).State = EntityState.Modified;
-        }
+        }        
 
         // ===============================================================================
         // ===============================================================================        

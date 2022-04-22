@@ -21,7 +21,7 @@ export class MemberDetailComponent implements OnInit {
   constructor(private memberService: MembersService, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.loadMember();
+    this.loadMember();    
 
     this.galleryOptions = [
       {
@@ -47,8 +47,9 @@ export class MemberDetailComponent implements OnInit {
     return imageUrls;
   }
 
+
   loadMember() {
-    this.memberService.getMember(this.route.snapshot.paramMap.get('knownas')).subscribe(member => {
+    this.memberService.getMember(this.route.snapshot.paramMap.get('id')).subscribe(member => {
       this.member = member;
       this.galleryImages = this.getImages();
     })
