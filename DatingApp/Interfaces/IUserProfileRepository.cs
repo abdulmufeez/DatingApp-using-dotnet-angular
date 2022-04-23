@@ -5,7 +5,8 @@ namespace DatingApp.Interfaces
 {
     public interface IUserProfileRepository
     {
-        Task<UserProfile> GetUserByIdAsync(int id);                
+        Task<UserProfile> GetUserByIdAsync(int id);   
+        Task<UserProfile> GetUserByUserNameAsync(string username);             
         Task<UserProfileDto> GetUserProfileByAppIdAsync(int id);        
         Task<UserProfileDto> GetUserProfileByIdAsync(int id);
         Task<IEnumerable<UserProfileDto>> GetUserProfilesAsync();

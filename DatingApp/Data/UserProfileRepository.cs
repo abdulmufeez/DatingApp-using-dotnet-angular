@@ -23,6 +23,18 @@ namespace DatingApp.Data
             return await _context.UserProfile.FindAsync(id);
         }
 
+        public async Task<UserProfile> GetUserByUserNameAsync(string username)
+        {
+            var user = await _context.ApplicationUser
+                .SingleOrDefaultAsync(m => m.UserName == username);
+
+            var userProfile = await _context.UserProfile
+                .Include(m => m.Photos)
+                .SingleOrDefaultAsync(m => m.ApplicationUserId == user.Id);
+
+            return userProfile;
+        }
+
         public async Task<UserProfileDto> GetUserProfileByAppIdAsync(int id)
         {
             return await _context.UserProfile                
