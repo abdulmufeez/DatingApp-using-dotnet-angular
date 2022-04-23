@@ -1,0 +1,17 @@
+img.img-thumbnail {
+    height: 100px;
+    min-width: 100px !important;
+    margin-bottom: 2px;
+}
+
+/* .nv-file-over {
+    border-top: dotted 3px rgb(120, 149, 151);
+} */
+
+/* hiding text */
+input[type=file]{
+    color: transparent;
+}
+
+.my-drop-zone { border: dotted 3px lightgray; }
+.nv-file-over { border: dotted 3px #78C2AD; } /* Default class applied to drop zones on over */
