@@ -3,8 +3,10 @@ import { FileUploader } from 'ng2-file-upload';
 import { ToastrService } from 'ngx-toastr';
 import { take } from 'rxjs';
 import { Member } from 'src/app/_models/member';
+import { Photo } from 'src/app/_models/photo';
 import { User } from 'src/app/_models/User';
 import { AccountService } from 'src/app/_services/account.service';
+import { MembersService } from 'src/app/_services/members.service';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -22,7 +24,9 @@ export class PhotoEditorComponent implements OnInit {
   uploader: FileUploader;
   hasBaseDropZoneOver = false;
 
-  constructor(private accountService: AccountService, private toastr: ToastrService) { 
+  constructor(private accountService: AccountService,
+    private memberService: MembersService,
+    private toastr: ToastrService) {
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
       this.user = user
     })
@@ -32,11 +36,25 @@ export class PhotoEditorComponent implements OnInit {
     this.initilizeUploader();
   }
 
-  fileOverBase(event: any){
-      this.hasBaseDropZoneOver = event; 
+  setMainPhoto(photo: Photo) {
+    this.memberService.setMainPhoto(photo.id).subscribe(() => { // setting mainphoto
+      this.user.photoUrl = photo.url;   // setting main photo in user model
+      this.accountService.setCurrentUser(this.user);  // saving updated user
+
+      this.member.mainPhotoUrl = photo.url;
+      this.member.photos.forEach(p => {
+        if (p.isMain) p.isMain = false;
+        if (p.id === photo.id) p.isMain = true;        
+      })
+      this.toastr.success('Picture set to Profile Photo');
+    })
   }
 
-  initilizeUploader(){
+  fileOverBase(event: any) {
+    this.hasBaseDropZoneOver = event;
+  }
+
+  initilizeUploader() {
     this.uploader = new FileUploader({
       url: this.baseUrl + 'users/add-photo',
       authToken: 'Bearer ' + this.user.token,
@@ -58,5 +76,14 @@ export class PhotoEditorComponent implements OnInit {
         this.toastr.success('Photo Uploaded');
       }
     }
-  }  
+  }
+
+  deletePhoto(photo: Photo) {
+    if (confirm('Are you sure want to delete this photo')) {
+      this.memberService.deletePhoto(photo.id).subscribe(() => {
+        this.member.photos = this.member.photos.filter(p => p.id !== photo.id); // filtering after deleting photo
+        this.toastr.success('Photo Deleted');
+      })
+    }
+  }
 }

@@ -21,7 +21,10 @@
         </ul>                
 
         <div class="btn-group d-flex"  dropdown *ngIf="(accountService.currentUser$ | async) as user">
-          <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle text-white"
+          <a routerLink="./member/edit">
+            <img class="mx-3" src="{{user.photoUrl || './assets/user.png'}}" alt="{{user.username}}">
+          </a>          
+          <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle text-white mt-2"
                   aria-controls="dropdown-basic">
             Welcome {{user.username | titlecase}} <span class="caret"></span>
           </a>

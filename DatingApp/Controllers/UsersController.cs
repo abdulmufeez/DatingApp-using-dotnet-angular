@@ -86,5 +86,45 @@ namespace DatingApp.Controllers
 
             return BadRequest("Problem Adding Photo");
         }
+
+        [HttpPut("set-main-photo/{photoId}")]
+        public async Task<ActionResult> SetMainPhoto(int photoId)
+        {
+            var userProfile = await _userProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+
+            var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
+
+            if(photo.IsMain) return  BadRequest("This Photo is already a main photo");
+
+            var currentMainPhoto = userProfile.Photos.SingleOrDefault(p => p.IsMain);
+
+            if (currentMainPhoto != null) currentMainPhoto.IsMain = false;
+            
+            photo.IsMain = true;
+
+            if (await _userProfileRepository.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Failed to set main photo");
+        }
+
+        [HttpDelete("delete-photo/{photoId}")]
+        public async Task<ActionResult> DeletePhoto(int photoId)
+        {
+            var userProfile = await _userProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
+
+            if (photo == null) return NotFound();
+            if (photo.IsMain) return BadRequest("Cannot Delete Main Photo");
+
+            if (photo.PublicId != null)
+            {
+                var result = await _photoService.DeletePhotoAsync(photo.PublicId);
+                if (result.Error != null) return BadRequest(result.Error.Message);
+            }
+            userProfile.Photos.Remove(photo);
+            if (await _userProfileRepository.SaveAllAsync()) return NoContent();
+
+            return BadRequest("Failed to delete the photo");
+        }
     }
 }

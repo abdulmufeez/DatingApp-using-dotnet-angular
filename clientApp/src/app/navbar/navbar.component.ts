@@ -10,16 +10,17 @@ import { AccountService } from '../_services/account.service';
   selector: 'app-navbar',
   templateUrl: './navbar.component.html',
   styles: [
+    'img { max-height: 40px; border: 1px solid #fff; display: inline;}'
   ]
 })
 export class NavbarComponent implements OnInit {
   model: any = {}   //initilize empty object with dynamic type
 
-  constructor(public accountService: AccountService, private router: Router, private toastr: ToastrService) { };
+  constructor(public accountService: AccountService, 
+      private router: Router, 
+      private toastr: ToastrService) { };
 
-  ngOnInit(): void {
-
-  } 
+  ngOnInit(): void {} 
 
   registerToggle(){  
     this.router.navigateByUrl('/register-form');

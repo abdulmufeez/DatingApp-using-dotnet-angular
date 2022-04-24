@@ -12,7 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Controllers
-{    
+{
     public class AccountController : BaseController
     {
         private readonly DataContext _context;
@@ -30,7 +30,7 @@ namespace DatingApp.Controllers
         {
             if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
             if (await UserEmailExists(registerDto.Email)) return BadRequest("Email is already taken");
-        
+
             using var hmac = new HMACSHA512();
 
             var user = new ApplicationUser()
@@ -67,19 +67,35 @@ namespace DatingApp.Controllers
                 if (computedHash[i] != user.HashedPassword[i]) return Unauthorized("Invalid Password");
             }
 
+            var userProfile = await _context.UserProfile
+                .Include(p => p.Photos)
+                .SingleOrDefaultAsync(m => m.ApplicationUserId == user.Id);
+
+            if (userProfile == null)
+            {
+                return new ApplicationUserDto
+                {
+                    Id = user.Id,
+                    Username = user.UserName,
+                    PhotoUrl = null,
+                    Token = _tokenService.CreateToken(user)
+                };
+            }
+
             return new ApplicationUserDto
             {
                 Id = user.Id,
                 Username = user.UserName,
+                PhotoUrl = userProfile.Photos.SingleOrDefault(p => p.IsMain)?.Url,
                 Token = _tokenService.CreateToken(user)
             };
         }
 
         //checking if username is already exist
-        private async Task<bool> UserExists(string username) 
+        private async Task<bool> UserExists(string username)
             => await _context.ApplicationUser.AnyAsync(user => user.UserName == username.ToLower());
 
         private async Task<bool> UserEmailExists(string email)
             => await _context.ApplicationUser.AnyAsync(user => user.Email == email);
-   }
+    }
 }
