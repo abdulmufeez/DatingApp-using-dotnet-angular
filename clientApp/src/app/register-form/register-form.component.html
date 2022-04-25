@@ -1,20 +1,47 @@
-<form #registerForm="ngForm" (ngSubmit)="register()" autocomplete="off">
+<form [formGroup]="registerForm" (ngSubmit)="register()" autocomplete="off">
     <h2 class="text-center text-primary">Sign Up</h2>
     <hr>
-    <div class="form-group mt-3">
-        <input type="text" class="form-control" name="username" placeholder="Username" [(ngModel)]="model.Username">
-    </div>
-    <div class="form-group mt-3">
-        <input type="text" class="form-control" name="email" placeholder="Email Address" [(ngModel)]="model.Email">
-    </div>
-    <div class="form-group mt-3">
-        <input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="model.Password">
-    </div>
-    <div class="form-group mt-3">
-        <input type="password" class="form-control" name="confirmPassword" placeholder="Confirm Password" [(ngModel)]="model.ConfirmPassword">
-    </div>
+    <app-text-inputs [formControl]='$any(registerForm.controls["username"])' [label]='"Username"'></app-text-inputs>
+    <app-text-inputs [formControl]='$any(registerForm.controls["email"])' [label]='"Email Address"'></app-text-inputs>
+    <app-text-inputs [formControl]='$any(registerForm.controls["password"])' [label]='"Password"' [type]='"password"'></app-text-inputs>
+    <app-text-inputs [formControl]='$any(registerForm.controls["confirmPassword"])' [label]='"Confirm Password"'[type]='"password"'></app-text-inputs>
     <div class="form-group text-center mt-3">
         <button class="btn btn-success mr-2" style="margin-right: 10px;" type="submit">Register</button>
         <button class="btn btn-warning mr-2" style="margin-right: 10px;" type="button" (click)="cancel()">Back</button>
     </div>
 </form>
+
+<p>Form Value: {{registerForm.value | json}}</p>
+<p>Form Status: {{registerForm.status| json}}</p>
+
+
+<!-- ============================================================================================================================ -->
+<!-- This is the full type form with various input instead of this i create a seperate component for reactive form inputs -->
+<!-- <div class="form-group mt-3">
+        <input [class.is-invalid]='registerForm.get("username").errors && registerForm.get("username").touched'
+        [class.is-valid]='registerForm.get("username") && registerForm.get("username").touched'
+        type="text" class="form-control" placeholder="Username" formControlName="username">
+        <div class="invalid-feedback">Please enter a username</div>
+    </div>     
+    <div class="form-group mt-3">
+        <input [class.is-invalid]='registerForm.get("email").errors && registerForm.get("email").touched'
+        [class.is-valid]='registerForm.get("email") && registerForm.get("email").touched'
+        type="text" class="form-control" placeholder="Email Address" formControlName="email">
+        <div class="invalid-feedback">Please enter a email address</div>
+    </div>
+    <div class="form-group mt-3">
+        <input 
+        [class.is-invalid]='registerForm.get("password").errors && registerForm.get("password").touched'
+        [class.is-valid]='registerForm.get("password") && registerForm.get("password").touched'
+        type="password" class="form-control" placeholder="Password" formControlName="password">
+        <div *ngIf="registerForm.get('password').hasError('required')" class="invalid-feedback">Please enter a password</div>
+        <div *ngIf="registerForm.get('password').hasError('minlength')" class="invalid-feedback">Password must greater than 6 characters</div>
+        <div *ngIf="registerForm.get('password').hasError('maxlength')" class="invalid-feedback">Password exceed to 16 characters</div>
+    </div>
+    <div class="form-group mt-3">
+        <input  [class.is-invalid]='registerForm.get("confirmPassword").errors && registerForm.get("confirmPassword").touched'
+        [class.is-valid]='registerForm.get("confirmPassword") && registerForm.get("confirmPassword").touched'
+        type="password" class="form-control" placeholder="Confirm Password" formControlName="confirmPassword">
+        <div *ngIf="registerForm.get('confirmPassword').hasError('required')" class="invalid-feedback">Please enter a password</div>
+        <div *ngIf="registerForm.get('confirmPassword').hasError('matched')" class="invalid-feedback">Confirm Password must match to Password</div>
+    </div> -->
