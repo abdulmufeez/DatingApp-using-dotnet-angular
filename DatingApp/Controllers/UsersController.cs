@@ -7,17 +7,19 @@ using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
+using DatingApp.Helpers;
 
 namespace DatingApp.Controllers
-{    
+{
     [Authorize]
     public class UsersController : BaseController
-    {        
+    {
         private readonly IUserProfileRepository _userProfileRepository;
         private readonly IMapper _mapper;
         private readonly IPhotoService _photoService;
 
-        public UsersController(IUserProfileRepository userProfileRepository, IMapper mapper, IPhotoService photoService)
+        public UsersController(IUserProfileRepository userProfileRepository, 
+            IMapper mapper, IPhotoService photoService)
         {
             _userProfileRepository = userProfileRepository;
             _mapper = mapper;
@@ -25,26 +27,32 @@ namespace DatingApp.Controllers
         }
 
         // api/users
-        [HttpGet]        
-        public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetUsers()
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetUsers([FromQuery]UserProfileParams userProfileParams)
         {
-           return Ok( await _userProfileRepository.GetUserProfilesAsync());
+            var userProfiles = await _userProfileRepository.GetUserProfilesAsync(userProfileParams);
+            Response.AddPaginationHeader(userProfiles.CurrentPage, userProfiles.PageSize, 
+                userProfiles.TotalCount, userProfiles.TotalPages);
+
+            return Ok(userProfiles);
         }
 
         //api/user/2
-        [HttpGet("{id}", Name = "GetUser")]        
-        public async Task<ActionResult<UserProfileDto>> GetUser(int id) 
-        {            
+        [HttpGet("{id}", Name = "GetUser")]
+        public async Task<ActionResult<UserProfileDto>> GetUser(int id)
+        {
             return await _userProfileRepository.GetUserProfileByIdAsync(id);
         }
 
         [HttpGet("edit/{id}")]
-        public async Task<ActionResult<UserProfileDto>> GetUserByAppId(int id){
+        public async Task<ActionResult<UserProfileDto>> GetUserByAppId(int id)
+        {
             return await _userProfileRepository.GetUserProfileByAppIdAsync(id);
         }
 
         [HttpPut]
-        public async Task<ActionResult> UpdateUser(UserProfileUpdateDto userProfileUpdateDto){
+        public async Task<ActionResult> UpdateUser(UserProfileUpdateDto userProfileUpdateDto)
+        {
             var user = await _userProfileRepository.GetUserByIdAsync(userProfileUpdateDto.Id);
 
             _mapper.Map(userProfileUpdateDto, user);
@@ -58,10 +66,10 @@ namespace DatingApp.Controllers
 
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
-        {                                  
+        {
             var userProfile = await _userProfileRepository.GetUserByUserNameAsync(User.GetUsername());
 
-            var result = await _photoService.AddPhotoAsync(file); 
+            var result = await _photoService.AddPhotoAsync(file);
 
             if (result.Error != null) return BadRequest(result.Error.Message);
 
@@ -81,8 +89,8 @@ namespace DatingApp.Controllers
             if (await _userProfileRepository.SaveAllAsync())
             {
                 // this will include the location in headers where you get the photos
-                return CreatedAtRoute("GetUser" , new {id = userProfile.Id}, _mapper.Map<PhotoDto>(photo));
-            } 
+                return CreatedAtRoute("GetUser", new { id = userProfile.Id }, _mapper.Map<PhotoDto>(photo));
+            }
 
             return BadRequest("Problem Adding Photo");
         }
@@ -94,12 +102,12 @@ namespace DatingApp.Controllers
 
             var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
 
-            if(photo.IsMain) return  BadRequest("This Photo is already a main photo");
+            if (photo.IsMain) return BadRequest("This Photo is already a main photo");
 
             var currentMainPhoto = userProfile.Photos.SingleOrDefault(p => p.IsMain);
 
             if (currentMainPhoto != null) currentMainPhoto.IsMain = false;
-            
+
             photo.IsMain = true;
 
             if (await _userProfileRepository.SaveAllAsync()) return NoContent();

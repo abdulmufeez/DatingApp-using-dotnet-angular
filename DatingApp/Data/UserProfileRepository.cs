@@ -2,6 +2,7 @@ using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using DatingApp.DTOs;
 using DatingApp.Entities;
+using DatingApp.Helpers;
 using DatingApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -51,11 +52,13 @@ namespace DatingApp.Data
 
         // project to automatically map to dto leaving one further asign thing behind 
         // and there is also no need to use include or anything
-        public async Task<IEnumerable<UserProfileDto>> GetUserProfilesAsync()
+        public async Task<PagedList<UserProfileDto>> GetUserProfilesAsync(UserProfileParams userProfileParams)
         {
-            return await _context.UserProfile
+            var query = _context.UserProfile
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .ToListAsync();
+                .AsNoTracking(); // return readOnly data bcz we never update delete or create from this api request               
+
+            return await PagedList<UserProfileDto>.CreateAsync(query, userProfileParams.PageNumber, userProfileParams.PageSize);
         }
 
         public async Task<bool> SaveAllAsync()
