@@ -1,3 +1,63 @@
+<div class="text-center mt-3">
+    <h2>Your matches - {{pagination?.totalItems}} found</h2>
+</div>
+<!-- <div class="container mt-3">
+    <form #form="ngForm" class="form-inline mb-3" (ngSubmit)="loadMembers()" autocomplete="off">
+        <div class="row mt-2 form-group form-inline">
+            <div class="col-3 px-2">
+                <label>Age from: </label>
+                <input type="number" class="form-control ml-1" style="width: 70px;" name="minAge"
+                    [(ngModel)]="userParams.minAge">
+            </div>
+            <div class="col-3 px-2">
+                <label>Age to: </label>
+                <input type="number" class="form-control ml-1" style="width: 70px;" name="maxAge"
+                    [(ngModel)]="userParams.maxAge">
+            </div>
+            <div class="col-3 px-2">
+                <label>Show: </label>
+                <select name="gender" [(ngModel)]="userParams.gender" class="form-control ml-1" style="width: 130px;">
+                    <option *ngFor="let gender of genderList" [value]="gender.value">
+                        {{gender.display}}
+                    </option>
+                </select>
+            </div>
+            <div class="col-3">
+                <button class="btn btn-primary ml-1" type="submit">Apply filters</button>
+                <button class="btn btn-primary ml-1" type="submit" (click)="resetFilters()">Reset filters</button>
+            </div>
+        </div>
+    </form>
+</div> -->
+
+<div class="container mt-3">
+    <form #form="ngForm" class="d-flex mb-3" (ngSubmit)="loadMembers()" autocomplete="off">
+        <div class="d-flex mx-2">
+            <label class="col-form-label me-2">Age from: </label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="minAge" 
+                [(ngModel)]="userParams.minAge">
+        </div>
+
+        <div class="d-flex px-2">
+            <label class="col-form-label me-2">Age to: </label>
+            <input type="number" class="form-control ml-1" style="width: 70px;" name="maxAge" 
+                [(ngModel)]="userParams.maxAge">
+        </div>
+
+        <div class="d-flex px-2">
+            <label class="col-form-label me-2">Show: </label>
+            <select name="gender" id="gender" style="width: 130px" [(ngModel)]="userParams.gender" class="form-control ml-1">
+                <option *ngFor="let gender of genderList" [value]="gender.value">
+                    {{gender.display}}
+                </option>                
+            </select>
+        </div>
+
+        <button class="btn btn-primary ms-1" type="submit">Apply Filters</button>
+        <button (click)="resetFilters()" class="btn btn-info ms-1" type="submit">Reset Filters</button>               
+    </form>
+</div>
+
 <div class="row">
     <div *ngFor="let member of members" class="col-2">
         <app-member-card [member]="member"></app-member-card>
@@ -5,12 +65,8 @@
 </div>
 
 <div class="d-flex justify-content-center" *ngIf="pagination">
-    <pagination 
-        [boundaryLinks]="true" 
-        [totalItems]="pagination.totalItems"
-        [itemsPerPage]="pagination.itemsPerPage"
-        [(ngModel)]="pagination.currentPage"
-        (pageChanged)="pageChanged($event)" 
-        previousText="&lsaquo;" nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
+    <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage"
+        [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
+        nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">
     </pagination>
 </div>

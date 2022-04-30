@@ -22,11 +22,12 @@
 
         <div class="btn-group d-flex"  dropdown *ngIf="(accountService.currentUser$ | async) as user">
           <a routerLink="./member/edit">
-            <img class="mx-3" src="{{user.photoUrl || './assets/user.png'}}" alt="{{user.username}}">
-          </a>          
+            <img class="mx-3" src="{{user.photoUrl || './assets/user.png'}}" alt="{{user.knownAs || user.username}}">
+          </a> 
+
           <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle text-white mt-2"
                   aria-controls="dropdown-basic">
-            Welcome {{user.username | titlecase}} <span class="caret"></span>
+            Welcome {{(user.knownAs || user.username) | titlecase}} <span class="caret"></span>
           </a>
           <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu mt-3"
               role="menu" aria-labelledby="button-basic">

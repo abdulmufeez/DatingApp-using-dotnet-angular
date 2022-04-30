@@ -29,7 +29,12 @@ namespace DatingApp.Controllers
         // api/users
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetUsers([FromQuery]UserProfileParams userProfileParams)
-        {
+        {            
+            var currentUserProfile = await _userProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            userProfileParams.CurrentUserId = currentUserProfile.ApplicationUserId;
+            if (string.IsNullOrEmpty(userProfileParams.Gender))
+                userProfileParams.Gender = currentUserProfile.Gender == "male" ? "female" : "male";    
+
             var userProfiles = await _userProfileRepository.GetUserProfilesAsync(userProfileParams);
             Response.AddPaginationHeader(userProfiles.CurrentPage, userProfiles.PageSize, 
                 userProfiles.TotalCount, userProfiles.TotalPages);

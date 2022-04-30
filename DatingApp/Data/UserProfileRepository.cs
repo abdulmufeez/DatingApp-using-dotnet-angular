@@ -54,11 +54,27 @@ namespace DatingApp.Data
         // and there is also no need to use include or anything
         public async Task<PagedList<UserProfileDto>> GetUserProfilesAsync(UserProfileParams userProfileParams)
         {
-            var query = _context.UserProfile
-                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .AsNoTracking(); // return readOnly data bcz we never update delete or create from this api request               
+            var query = _context.UserProfile.AsQueryable();
 
-            return await PagedList<UserProfileDto>.CreateAsync(query, userProfileParams.PageNumber, userProfileParams.PageSize);
+            // Filtering result
+            query = query.Where(u => u.ApplicationUserId != userProfileParams.CurrentUserId);
+            query = query.Where(u => u.Gender == userProfileParams.Gender);
+
+            var minDob = DateTime.Today.AddYears(-userProfileParams.MaxAge - 1);
+            var maxDob = DateTime.Today.AddYears(-userProfileParams.MinAge);
+
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
+            query = userProfileParams.OrderBy switch 
+            {
+                "created" => query.OrderByDescending(u => u.ProfileCreatedAt),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+            
+            return await PagedList<UserProfileDto>.CreateAsync(
+                query.ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
+                .AsNoTracking(), 
+                    userProfileParams.PageNumber, userProfileParams.PageSize);
         }
 
         public async Task<bool> SaveAllAsync()

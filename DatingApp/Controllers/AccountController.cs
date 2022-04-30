@@ -87,7 +87,9 @@ namespace DatingApp.Controllers
                 Id = user.Id,
                 Username = user.UserName,
                 PhotoUrl = userProfile.Photos.SingleOrDefault(p => p.IsMain)?.Url,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user),
+                Gender = userProfile.Gender,
+                KnownAs = userProfile.KnownAs
             };
         }
 
