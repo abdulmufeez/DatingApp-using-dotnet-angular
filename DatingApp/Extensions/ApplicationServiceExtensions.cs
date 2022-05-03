@@ -19,6 +19,7 @@ namespace DatingApp.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
+            services.AddScoped<LogUserActivity>();
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             //Adding database configurations
