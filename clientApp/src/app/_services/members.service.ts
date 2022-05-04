@@ -1,10 +1,12 @@
 import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, of } from 'rxjs';
+import { map, of, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { Member } from '../_models/member';
 import { PaginatedResult } from '../_models/pagination';
+import { User } from '../_models/User';
 import { UserParams } from '../_models/userParams';
+import { AccountService } from './account.service';
 
 //assigning token to http header
 // const httpOptions = {
@@ -19,9 +21,16 @@ import { UserParams } from '../_models/userParams';
 export class MembersService {
   baseUrl = environment.dotnetUrl;
   members: Member[] = [];
+  user: User;
+  userParams: UserParams;
   memberCache= new Map();   // map is like a dictionary in which we have keys and values
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private accountService : AccountService) { 
+    this.accountService.currentUser$.pipe(take(1)).subscribe( user => {
+      this.user = user;
+      this.userParams = new UserParams(user);
+    })
+  }
 
   getMembers(userParams: UserParams){
     //getting data from cache
@@ -45,7 +54,7 @@ export class MembersService {
   }
 
   getMember(id: string){
-    // combining different array from map to single array
+    // combining different array from map(cache) to single array
     const member = [...this.memberCache.values()]         
       .reduce((prvArr,currElem) => prvArr.concat(currElem.results), [])
       .find((member: Member) => member.id.toString() === id);
@@ -98,5 +107,20 @@ export class MembersService {
     params = params.append('pageSize', pageSize.toString());
     
     return params;
+  }
+
+
+  // helper methods
+  getUserParams() {
+    return this.userParams;
+  }
+  
+  setUserParams(params: UserParams) {
+    this.userParams = params;
+  }
+
+  resetUserParams() {
+    this.userParams = new UserParams(this.user);
+    return this.userParams;
   }
 }
