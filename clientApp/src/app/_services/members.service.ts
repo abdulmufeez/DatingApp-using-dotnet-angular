@@ -19,23 +19,39 @@ import { UserParams } from '../_models/userParams';
 export class MembersService {
   baseUrl = environment.dotnetUrl;
   members: Member[] = [];
+  memberCache= new Map();   // map is like a dictionary in which we have keys and values
 
   constructor(private http: HttpClient) { }
 
-  getMembers(userParams: UserParams)
-  {
+  getMembers(userParams: UserParams){
+    //getting data from cache
+    var response = this.memberCache.get(Object.values(userParams).join('-'));
+    if (response) return of(response);      
+
+    
     let params = this.getPaginatedHeaders(userParams.pageNumber, userParams.pageSize);
 
     params = params.append('minAge', userParams.minAge.toString());
     params = params.append('maxAge', userParams.maxAge.toString());
     params = params.append('gender', userParams.gender);
+    params = params.append('gender', userParams.orderBy);
     
-    return this.getPaginatedResults<Member[]>(this.baseUrl + 'users', params);
+    return this.getPaginatedResults<Member[]>(this.baseUrl + 'users', params)
+      // sending data to cache
+      .pipe(map(response => {
+        this.memberCache.set(Object.values(userParams).join('-'), response);
+        return response;
+      }))
   }
 
   getMember(id: string){
-    const member = this.members.find(x => x.id.toString() === id);
-    if (member !== undefined) return of(member);
+    // combining different array from map to single array
+    const member = [...this.memberCache.values()]         
+      .reduce((prvArr,currElem) => prvArr.concat(currElem.results), [])
+      .find((member: Member) => member.id.toString() === id);
+    
+    // returning member from singled array
+    if (member) return of(member);        
     return this.http.get<Member>(this.baseUrl + 'users/' + id);
   }
 
