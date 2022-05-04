@@ -17,9 +17,10 @@ namespace DatingApp.Extensions
             //ITokenService Interface => TokenService Class 
             //Only created when its called and terminated afterward
             services.AddScoped<ITokenService, TokenService>();
-            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             services.AddScoped<IPhotoService, PhotoService>();
-            services.AddScoped<LogUserActivity>();
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            services.AddScoped<ILikesRepository, LikeRepository>();
+            services.AddScoped<LogUserActivity>();            
 
             services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
             //Adding database configurations

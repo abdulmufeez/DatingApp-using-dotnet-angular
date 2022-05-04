@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using AutoMapper;
 using DatingApp.DTOs;
 using DatingApp.Entities;
@@ -6,7 +5,6 @@ using DatingApp.Extensions;
 using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Identity;
 using DatingApp.Helpers;
 
 namespace DatingApp.Controllers

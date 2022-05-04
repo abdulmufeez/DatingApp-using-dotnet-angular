@@ -1,9 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
-using DatingApp.Extensions;
 
 namespace DatingApp.Entities
 {
@@ -28,10 +23,13 @@ namespace DatingApp.Entities
         public string Country { get; set; }
         [Required]
         public string City { get; set; }
-        public ICollection<Photo> Photos { get; set; }  
+        public ICollection<Photo> Photos { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }      
+        public ApplicationUser ApplicationUser { get; set; }
         public int ApplicationUserId { get; set; }
+
+        public ICollection<UserLike> LikedByUsers { get; set; }         
+        public ICollection<UserLike> LikedUsers { get; set; }
 
         // automapper automatically use this function and assign int value to the property
         // public int GetAge(){
