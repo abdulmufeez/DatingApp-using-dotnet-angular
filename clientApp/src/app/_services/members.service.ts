@@ -2,6 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { map, of, take } from 'rxjs';
 import { environment } from 'src/environments/environment';
+import { LikeParams } from '../_models/likeParams';
 import { Member } from '../_models/member';
 import { PaginatedResult } from '../_models/pagination';
 import { User } from '../_models/User';
@@ -23,13 +24,15 @@ export class MembersService {
   members: Member[] = [];
   user: User;
   userParams: UserParams;
+  likeParams: LikeParams;
   memberCache= new Map();   // map is like a dictionary in which we have keys and values
 
   constructor(private http: HttpClient, private accountService : AccountService) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe( user => {
       this.user = user;
       this.userParams = new UserParams(user);
-    })
+    });
+    this.likeParams = new LikeParams();
   }
 
   getMembers(userParams: UserParams){
@@ -43,7 +46,7 @@ export class MembersService {
     params = params.append('minAge', userParams.minAge.toString());
     params = params.append('maxAge', userParams.maxAge.toString());
     params = params.append('gender', userParams.gender);
-    params = params.append('gender', userParams.orderBy);
+    params = params.append('orderBy', userParams.orderBy);
     
     return this.getPaginatedResults<Member[]>(this.baseUrl + 'users', params)
       // sending data to cache
@@ -84,9 +87,18 @@ export class MembersService {
   }
 
   deletePhoto(photoId: number){
-    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId)
+    return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
   }
 
+  addLike(id: number){
+    return this.http.post(this.baseUrl + 'likes/' + id.toString(), {});
+  }
+
+  getLikes(likeParams: LikeParams){      
+    let params = this.getPaginatedHeaders(likeParams.pageNumber, likeParams.pageSize);
+    params = params.append('predicate', likeParams.predicate);        
+    return this.getPaginatedResults<Partial<Member[]>>(this.baseUrl + 'likes/', params);
+  }
 
   private getPaginatedResults<T>(url, params){
     const paginatedResult: PaginatedResult<T> = new PaginatedResult<T>();
@@ -122,5 +134,13 @@ export class MembersService {
   resetUserParams() {
     this.userParams = new UserParams(this.user);
     return this.userParams;
+  }
+
+  getLikeParams() {
+    return this.likeParams;
+  }
+  
+  setLikeParams(params: LikeParams) {
+    this.likeParams = params;
   }
 }

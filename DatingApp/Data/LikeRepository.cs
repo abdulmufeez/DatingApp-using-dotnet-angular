@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using DatingApp.DTOs;
 using DatingApp.Entities;
 using DatingApp.Extensions;
+using DatingApp.Helpers;
 using DatingApp.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,31 +25,33 @@ namespace DatingApp.Data
             return await _context.Likes.FindAsync(sourceUserId, LikeUserId);
         }
 
-        public async Task<IEnumerable<LikeDto>> GetUserLikes(string predicate, int userProfileId)
+        public async Task<PagedList<LikeDto>> GetUserLikes(LikeParams likeParams)
         {
             var users = _context.UserProfile.OrderBy(u => u.Id).AsQueryable();
             var likes = _context.Likes.AsQueryable();
 
-            if (predicate == "liked")
+            if (likeParams.Predicate == "liked")
             {
-                likes = likes.Where(like => like.SourceUserId == userProfileId);
+                likes = likes.Where(like => like.SourceUserId == likeParams.UserProfileId);
                 users = likes.Select(like => like.LikedUser);
             }
 
-            if (predicate == "likedBy")
+            if (likeParams.Predicate == "likedBy")
             {
-                likes = likes.Where(like => like.LikedUserId == userProfileId);
+                likes = likes.Where(like => like.LikedUserId == likeParams.UserProfileId);
                 users = likes.Select(like => like.SourceUser);
             }
 
-            return await users.Select(user => new LikeDto
+            var likedUsers = users.Select(user => new LikeDto
             {
                 Id = user.Id,
                 Age = user.DateOfBirth.CalculateAge(),
                 KnownAs = user.KnownAs,
-                PhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain).Url,
+                MainPhotoUrl = user.Photos.FirstOrDefault(p => p.IsMain).Url,
                 City = user.City
-            }).ToListAsync();
+            });
+
+            return await PagedList<LikeDto>.CreateAsync(likedUsers,likeParams.PageNumber,likeParams.PageSize);
         }
 
         public async Task<UserProfile> GetUserProfileWithLikes(int userProfileId)

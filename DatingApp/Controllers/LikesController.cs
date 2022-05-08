@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using DatingApp.DTOs;
 using DatingApp.Entities;
 using DatingApp.Extensions;
+using DatingApp.Helpers;
 using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -37,7 +38,7 @@ namespace DatingApp.Controllers
 
             var userLike = await _likeRepository.GetUserLike(sourceUserProfileId, likedUserProfile.Id);
             // check if already liked
-            if (userLike is not null) return BadRequest("You already liked this user");
+            if (userLike is not null) return BadRequest($"You already liked {likedUserProfile.KnownAs}");
 
             userLike = new UserLike
             {
@@ -47,14 +48,15 @@ namespace DatingApp.Controllers
             sourceUserProfile.LikedUsers.Add(userLike);
             if (await _userProfileRepository.SaveAllAsync()) return Ok();
 
-            return BadRequest("Failed to like user");
+            return BadRequest($"Failed to like {likedUserProfile.KnownAs}");
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikes(string predicate)        
+        public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikes([FromQuery]LikeParams likeParams)        
         {
-            var sourceUserProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            var userProfiles = await _likeRepository.GetUserLikes(predicate, sourceUserProfileId);
+            likeParams.UserProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+            var userProfiles = await _likeRepository.GetUserLikes(likeParams);
+            Response.AddPaginationHeader(userProfiles.CurrentPage,userProfiles.PageSize,userProfiles.TotalCount,userProfiles.TotalPages);
             return Ok(userProfiles);
         }
     }

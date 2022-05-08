@@ -28,7 +28,7 @@ namespace DatingApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserProfileDto>>> GetUsers([FromQuery]UserProfileParams userProfileParams)
         {            
-            var currentUserProfile = await _userProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            var currentUserProfile = await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId());
             userProfileParams.CurrentUserId = currentUserProfile.ApplicationUserId;
             if (string.IsNullOrEmpty(userProfileParams.Gender))
                 userProfileParams.Gender = currentUserProfile.Gender == "male" ? "female" : "male";    

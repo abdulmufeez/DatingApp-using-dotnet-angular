@@ -5,4 +5,5 @@ export interface User {
     token: string;
     gender: string;
     knownAs: string;
+    age: number;
 }

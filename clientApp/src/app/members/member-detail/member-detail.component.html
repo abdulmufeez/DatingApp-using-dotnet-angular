@@ -17,7 +17,8 @@
                 </div>
                 <div>
                     <strong>Last Active:</strong>
-                    <p>{{member.lastActive | timeago}}</p>                    
+                    <!-- <p>{{member.lastActive | timeago}}</p>                                        -->
+                    <p>{{member.lastActive}}</p>
                 </div>
                 <div>
                     <strong>Member Since:</strong>
@@ -26,7 +27,7 @@
             </div>
             <div class="card-footer">
                 <div class="btn-group d-flex">
-                    <button class="btn btn-secondary">Like</button>
+                    <button (click)="addLike(member)" class="btn btn-secondary">Like</button>
                     <button class="btn btn-warning">Message</button>                    
                 </div>
             </div>

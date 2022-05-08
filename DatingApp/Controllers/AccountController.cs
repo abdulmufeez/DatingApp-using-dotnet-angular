@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using DatingApp.Data;
 using DatingApp.DTOs;
 using DatingApp.Entities;
+using DatingApp.Extensions;
 using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -89,7 +90,8 @@ namespace DatingApp.Controllers
                 PhotoUrl = userProfile.Photos.SingleOrDefault(p => p.IsMain)?.Url,
                 Token = _tokenService.CreateToken(user),
                 Gender = userProfile.Gender,
-                KnownAs = userProfile.KnownAs
+                KnownAs = userProfile.KnownAs,
+                Age = userProfile.DateOfBirth.CalculateAge()
             };
         }
 
