@@ -11,12 +11,14 @@ namespace DatingApp.Data
         public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
         public DbSet<UserProfile> UserProfile { get; set; }
         public DbSet<UserLike> Likes { get; set; }
+        public DbSet<Message> Messages { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
+            // for likes
             // creating a primary key with the combination of both keys
             modelBuilder.Entity<UserLike>()
                 .HasKey(k => new {k.SourceUserId, k.LikedUserId});
@@ -34,6 +36,17 @@ namespace DatingApp.Data
                 .WithMany(l => l.LikedByUsers)
                 .HasForeignKey(s => s.LikedUserId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // for messages
+            modelBuilder.Entity<Message>()
+                .HasOne(r => r.Recipient)
+                .WithMany(m => m.MessagesRecieved)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Message>()
+                .HasOne(r => r.Sender)
+                .WithMany(m => m.MessagesSent)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

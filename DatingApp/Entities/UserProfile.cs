@@ -31,6 +31,9 @@ namespace DatingApp.Entities
         public ICollection<UserLike> LikedByUsers { get; set; }         
         public ICollection<UserLike> LikedUsers { get; set; }
 
+        public ICollection<Message> MessagesSent { get; set; }
+        public ICollection<Message> MessagesRecieved { get; set; }
+
         // automapper automatically use this function and assign int value to the property
         // public int GetAge(){
         //     return DateOfBirth.CalculateAge();

@@ -25,10 +25,10 @@ export class ListsComponent implements OnInit {
 
   loadLikes(){    
     this.memberService.setLikeParams(this.likeParams);      
-    this.memberService.getLikes(this.likeParams).subscribe((response => {
+    this.memberService.getLikes(this.likeParams).subscribe(response => {
       this.members = response.results;
       this.pagination = response.pagination;
-    }))
+    });
   }
 
   pageChanged(event: any) {
