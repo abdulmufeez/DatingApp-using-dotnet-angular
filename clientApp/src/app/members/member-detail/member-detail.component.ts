@@ -19,20 +19,25 @@ export class MemberDetailComponent implements OnInit {
   messages: Message[] = [];
 
   //these are for when we specifically click on any tab then its laod and open
-  @ViewChild('memberTabs') memberTabs: TabsetComponent;
+  @ViewChild('memberTabs', {static: true}) memberTabs: TabsetComponent;
   activeTab: TabDirective;
 
   //for photo gallery
   galleryOptions: NgxGalleryOptions[];
   galleryImages: NgxGalleryImage[];
 
-  constructor(private memberService: MembersService, 
+  constructor(private memberService: MembersService,
     private route: ActivatedRoute,
     private toastr: ToastrService,
     private messageService: MessageService) { }
 
   ngOnInit(): void {
-    this.loadMember();    
+    this.route.data.subscribe(data => {
+      this.member = data['member'];
+    })
+    this.route.queryParams.subscribe(params => {
+      params['tab'] ? this.selectTab(params['tab']) : this.selectTab(0);
+    })    
 
     this.galleryOptions = [
       {
@@ -44,6 +49,8 @@ export class MemberDetailComponent implements OnInit {
         preview: false
       }
     ]    
+
+    this.galleryImages = this.getImages();
   }
 
   getImages(): NgxGalleryImage[] {
@@ -56,14 +63,7 @@ export class MemberDetailComponent implements OnInit {
       })
     }
     return imageUrls;
-  }
-
-
-  loadMember() {
-    this.memberService.getMember(this.route.snapshot.paramMap.get('id')).subscribe(member => {
-      this.member = member;      
-    })
-  }
+  }  
 
   addLike(member: Member){
     this.memberService.addLike(member.id).subscribe(() => {
@@ -75,6 +75,10 @@ export class MemberDetailComponent implements OnInit {
     this.messageService.getMessageThread(this.member.id).subscribe(messages => {
       this.messages = messages;
     })
+  }
+
+  selectTab(tabId: number){
+    this.memberTabs.tabs[tabId].active = true;
   }
 
   // to activated specific tab

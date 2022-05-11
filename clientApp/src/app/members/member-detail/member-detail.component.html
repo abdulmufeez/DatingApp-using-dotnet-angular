@@ -1,4 +1,4 @@
-<div class="row" *ngIf="member">
+<div class="row">
     <div class="col-4">
         <div class="card">
             <img src="{{member.mainPhotoUrl || './assets/user.png'}}" alt="{{member.knownAs}}" class="card-img-top img-thumbnail">
@@ -28,7 +28,7 @@
             <div class="card-footer">
                 <div class="btn-group d-flex">
                     <button (click)="addLike(member)" class="btn btn-secondary">Like</button>
-                    <button class="btn btn-warning">Message</button>                    
+                    <button (click)="selectTab(2)" class="btn btn-warning">Message</button>                    
                 </div>
             </div>
         </div>
