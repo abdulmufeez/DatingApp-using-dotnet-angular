@@ -26,6 +26,14 @@ export class MessageService {
     return this.http.get<Message[]>(this.baseUrl + 'messages/thread/' + recipientId.toString());
   }
 
+  sendMessage(recipientId: number, content: string){
+    return this.http.post<Message>(this.baseUrl + 'messages', {recipientId, content})
+  }
+
+  deleteMessage(id: number, deletedBoth:string){
+    return this.http.delete(this.baseUrl + 'messages/' + id.toString() + '?deletedBoth=' + deletedBoth);
+  }
+
   // helper methods
   getMessageParams() {
     return this.messageParams;

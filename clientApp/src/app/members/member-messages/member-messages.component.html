@@ -8,7 +8,7 @@
             <li *ngFor="let message of messages">
                 <div>
                     <span class="chat-img">
-                        <img class="rounded-circle" src="{{message.senderPhotoUrl || './assets/user.png'}}" 
+                        <img class="rounded-circle" src="{{message.senderPhotoUrl || './assets/user.png'}}"
                             alt="{{message.senderName}}">
                     </span>
                     <div class="chat-body">
@@ -23,6 +23,19 @@
                                     && message.senderId !== message.recipientId">
                                     (read {{message.messageRead | timeago}})
                                 </span>
+                                <span class="btn-group" dropdown *ngIf="recipientId !== message.senderId">
+                                    <a (click)="$event.stopPropagation()" id="button-basic" dropdownToggle type="button"
+                                        class="dropdown-toggle" aria-controls="dropdown-basic">
+                                        <i class="fa fa-trash"></i> <span class="caret"></span>
+                                    </a>
+                                    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" 
+                                        aria-labelledby="button-basic">
+                                        <li role="menuitem"><a class="dropdown-item "
+                                                (click)="$event.stopPropagation()" (click)="deleteMessage(message.id,'false')"><i class="fa fa-user"> Delete for me</i></a></li>                                        
+                                        <li role="menuitem"><a class="dropdown-item"
+                                                (click)="$event.stopPropagation()" (click)="deleteMessage(message.id,'true')"><i class="fa fa-users"> Delete for all</i></a></li>
+                                    </ul>
+                                </span>
                             </small>
                         </div>
                         <p>{{message.content}}</p>
@@ -32,16 +45,11 @@
         </ul>
     </div>
 
-    <div class="card-footer" >
+    <div class="card-footer">
         <form #messageForm="ngForm" (ngSubmit)="sendMessage()" autocomplete="off">
             <div class="input-group">
-                <input 
-                    name="messageContent"
-                    required
-                    
-                    type="text" 
-                    class="form-control input-sm" 
-                    placeholder="Send a private message">
+                <input name="messageContent" required [(ngModel)]="messageContent" type="text"
+                    class="form-control input-sm" placeholder="Send a private message">
                 <div class="input-group-append">
                     <button [disabled]="!messageForm.valid" class="btn btn-primary" type="submit">Send</button>
                 </div>

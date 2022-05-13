@@ -8,45 +8,56 @@
             (click)="loadMessages()"><i class="fa fa-paper-plane"></i> Sent</button>
     </div>
 </div>
-<div class="row text-center" *ngIf="messages?.length === 0"><h3>No Messages :)</h3></div>
+<div class="row text-center" *ngIf="messages?.length === 0">
+    <h3>No Messages :)</h3>
+</div>
 <div class="row" *ngIf="messages?.length > 0">
     <table class="table table-hover" style="cursor: pointer;">
         <tr>
             <th style="width: 40%">Message</th>
             <th style="width: 20%">From / To</th>
             <th style="width: 20%">Sent / Received</th>
-            <th style="width: 20%">Actions</th>
+
+            <th *ngIf="messageParams.container === 'Outbox'" style="width: 20%">Actions</th>
         </tr>
-        <tr  *ngFor="let message of messages" 
-            routerLink='{{messageParams.container === "Outbox" 
+        <tr [hidden]="loadingFlag" *ngFor="let message of messages" routerLink='{{messageParams.container === "Outbox" 
                 ? "/member/" + message.recipientId 
-                : "/member/" + message.senderId}}' [queryParams]='{tab: 2}' >
-            <td>{{message.content}}</td>    
+                : "/member/" + message.senderId}}' [queryParams]='{tab: 2}'>
+            <td>{{message.content}}</td>
             <td>
                 <div *ngIf="messageParams.container === 'Outbox'">
-                    <img 
-                        class="img-circle rounded-circle"
-                        src="{{message.recipientPhotoUrl || './assets.user.png'}}" 
+                    <img class="img-circle rounded-circle" src="{{message.recipientPhotoUrl || './assets.user.png'}}"
                         alt="{{message.recipientId}}">
                     <strong>{{message.recipientName | titlecase}}</strong>
-                </div> 
+                </div>
                 <div *ngIf="messageParams.container !== 'Outbox'">
-                    <img 
-                        class="img-circle rounded-circle"
-                        src="{{message.senderPhotoUrl || './assets.user.png'}}" 
+                    <img class="img-circle rounded-circle" src="{{message.senderPhotoUrl || './assets.user.png'}}"
                         alt="{{message.senderId}}">
                     <strong>{{message.senderName | titlecase}}</strong>
-                </div> 
+                </div>
             </td>
             <td>{{message.messageSent | timeago}}</td>
-            <td>
-                <button class="btn btn-primary">Delete Message</button>
+            <td *ngIf="messageParams.container === 'Outbox'">
+                <!-- stopping from router link to route this button click -->
+                <div class="btn-group" dropdown>
+                    <button (click)="$event.stopPropagation()" id="button-basic" dropdownToggle type="button"
+                        class="btn btn-primary dropdown-toggle" aria-controls="dropdown-basic">
+                        Delete Message <span class="caret"></span>
+                    </button>
+                    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
+                        aria-labelledby="button-basic">
+                        <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation()"
+                                (click)="deleteMessage(message.id,'false')">Delete for me</a></li>
+                        <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation()"
+                                (click)="deleteMessage(message.id,'true')">Delete for everyone</a></li>
+                    </ul>
+                </div>
             </td>
         </tr>
     </table>
 </div>
 
-<div class="d-flex justify-content-center mt-3" *ngIf="pagination">
+<div class="d-flex justify-content-center mt-3" *ngIf="pagination && !loadingFlag">
     <pagination [boundaryLinks]="true" [totalItems]="pagination.totalItems" [itemsPerPage]="pagination.itemsPerPage"
         [(ngModel)]="pagination.currentPage" (pageChanged)="pageChanged($event)" previousText="&lsaquo;"
         nextText="&rsaquo;" firstText="&laquo;" lastText="&raquo;">

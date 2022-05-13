@@ -14,6 +14,7 @@ export class MessagesComponent implements OnInit {
   messages: Message[]
   pagination: Pagination;
   messageParams: MessageParams;
+  loadingFlag = false;
 
   constructor(private messageService: MessageService) { 
     this.messageParams = this.messageService.getMessageParams();
@@ -24,11 +25,19 @@ export class MessagesComponent implements OnInit {
   }
 
   loadMessages(){
+    this.loadingFlag = true;
     this.messageService.setMessageParams(this.messageParams);
     this.messageService.getMessages(this.messageParams).subscribe(response => {
       this.messages = response.results;
       this.pagination = response.pagination; 
+      this.loadingFlag = false;
     });
+  }
+
+  deleteMessage(id: number, deleteBoth:string){
+    this.messageService.deleteMessage(id, deleteBoth).subscribe(() => {
+      this.messages.splice(this.messages.findIndex(m => m.id === id),1);
+    })
   }
 
   pageChanged(event: any) {

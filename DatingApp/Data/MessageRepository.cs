@@ -62,9 +62,11 @@ namespace DatingApp.Data
                 .Include(u => u.Sender).ThenInclude(p => p.Photos)
                 .Include(u => u.Recipient).ThenInclude(p => p.Photos)
                 .Where(m => m.RecipientId == sourceId
+                    && m.RecipientDeleted == false
                     && m.SenderId == recipientId
                     || m.RecipientId == recipientId
                     && m.SenderId == sourceId
+                    && m.SenderDeleted == false
                 )
                 .OrderBy(m => m.MessageSent)
                 .ToListAsync();

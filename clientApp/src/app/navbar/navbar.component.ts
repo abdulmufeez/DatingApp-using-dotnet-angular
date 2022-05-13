@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
-import { HomeComponent } from '../home/home.component';
-import { User } from '../_models/User';
 import { AccountService } from '../_services/account.service';
 
 @Component({
