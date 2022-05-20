@@ -17,14 +17,3 @@ export class PreventUnsavedChangesGuard implements CanDeactivate<unknown> {
     return true;
   }  
 }
-
-
-export class PreventUnsavedChangesGuardForAddProfile implements CanDeactivate<unknown> {
-  canDeactivate(
-    component: UserProfileFormComponent): boolean {
-      if (component.addProfileForm.dirty) {
-        return confirm('Are you sure you want to continue? Any unsaved chages will be lost');
-      }    
-    return true;
-  }  
-}
