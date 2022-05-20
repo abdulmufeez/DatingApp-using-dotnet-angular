@@ -15,9 +15,10 @@ namespace DatingApp.Helpers
                 // Configuring automapper so that it pick property from child class and assign it to parent class
                 .ForMember(destination => destination.MainPhotoUrl, 
                 options => options.MapFrom(source => source.Photos.FirstOrDefault(p => p.IsMain).Url))
-                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));
-            CreateMap<Photo, PhotoDto>();            
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.DateOfBirth.CalculateAge()));            
+            CreateMap<UserProfileCreateDto, UserProfile>();
             CreateMap<UserProfileUpdateDto, UserProfile>();
+            CreateMap<Photo, PhotoDto>();            
             CreateMap<Message, MessageDto>()
                 .ForMember(dest => dest.SenderPhotoUrl, opt => opt.MapFrom(src => src.Sender.Photos.FirstOrDefault(p => p.IsMain).Url))
                 .ForMember(dest => dest.RecipientPhotoUrl, opt => opt.MapFrom(src => src.Recipient.Photos.FirstOrDefault(p => p.IsMain).Url));

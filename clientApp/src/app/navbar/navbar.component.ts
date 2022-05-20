@@ -13,25 +13,21 @@ import { AccountService } from '../_services/account.service';
 export class NavbarComponent implements OnInit {
   model: any = {}   //initilize empty object with dynamic type
 
-  constructor(public accountService: AccountService, 
-      private router: Router, 
-      private toastr: ToastrService) { };
+  constructor(public accountService: AccountService,
+    private router: Router,
+    private toastr: ToastrService) { };
 
-  ngOnInit(): void {} 
+  ngOnInit(): void { } 
 
-  registerToggle(){  
-    this.router.navigateByUrl('/register-form');
-  }
-
-  login(){
+  login() {
     this.accountService.login(this.model).subscribe(response => {
       this.toastr.success('Login Successfully');
-      this.router.navigateByUrl('/members');     
+      this.router.navigateByUrl('/members');
     })
   }
 
   logout() {
-    this.accountService.logout();      
-    this.router.navigateByUrl('/');     
-  }  
+    this.accountService.logout();
+    this.router.navigateByUrl('/');
+  }
 }

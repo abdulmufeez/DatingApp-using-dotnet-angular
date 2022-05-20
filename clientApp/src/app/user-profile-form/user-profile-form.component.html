@@ -1,0 +1,76 @@
+<form #addProfileForm="ngForm" [formGroup]="registerForm" (ngSubmit)="registerForm.valid && addProfile()" autocomplete="off" *ngIf="!addPhoto">
+    <h2 class="text-center text-primary">Create Profile</h2>
+    <hr>
+
+    <div class="row" *ngIf="validationErrors.length > 0">
+        <ul class="text-danger">
+            <li *ngFor="let error of validationErrors">{{error}}</li>
+        </ul>
+        <hr>
+    </div>
+
+    <div class="row">
+        <app-text-inputs class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["firstName"])'
+            [label]='"First Name"'></app-text-inputs>
+        <app-text-inputs class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["lastName"])'
+            [label]='"Last Name"'></app-text-inputs>
+        <app-text-inputs class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["knownAs"])'
+            [label]='"Known As"'></app-text-inputs>
+        <app-date-input class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["dateOfBirth"])'
+            [maxDate]="maxDate" [label]='"Date Of Birth"'></app-date-input>
+        <app-text-inputs class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["country"])'
+            [label]='"Country"'></app-text-inputs>
+        <app-text-inputs class="col-md-6 mt-2 mb-2" [formControl]='$any(registerForm.controls["city"])'
+            [label]='"City"'></app-text-inputs>
+
+    </div>
+
+    <div class="form-group mt-2 mb-3">
+        <select formControlName="gender"
+            [class.is-invalid]="registerForm.get('gender').errors && !registerForm.get('gender').untouched"
+            [class.is-valid]="registerForm.get('gender').valid" class="form-control">
+            <option value="male">Males</option>
+            <option value="female">Females</option>
+        </select>
+        <div *ngIf="registerForm.get('gender').hasError('required')" class="invalid-feedback">Please select your sex
+        </div>
+    </div>
+    <div class="form-group mt-3 mb-3">
+        <textarea
+            [class.is-invalid]="registerForm.get('introduction').errors && !registerForm.get('introduction').untouched"
+            [class.is-valid]="registerForm.get('introduction').valid" formControlName="introduction" rows="2"
+            type="text" class="form-control" placeholder="Introduction"></textarea>
+        <div *ngIf="registerForm.get('introduction').hasError('required')" class="invalid-feedback">Tell People about
+            yourself</div>
+    </div>
+    <div class="form-group mt-3 mb-3">
+        <textarea
+            [class.is-invalid]="registerForm.get('lookingFor').errors && !registerForm.get('lookingFor').untouched"
+            [class.is-valid]="registerForm.get('lookingFor').valid" formControlName="lookingFor" rows="2" type="text"
+            class="form-control" placeholder="Looking For"></textarea>
+        <div *ngIf="registerForm.get('lookingFor').hasError('required')" class="invalid-feedback">What are you looking
+            for</div>
+    </div>
+    <div class="form-group mt-3 mb-3">
+        <textarea [class.is-invalid]="registerForm.get('interests').errors && !registerForm.get('interests').untouched"
+            [class.is-valid]="registerForm.get('interests').valid" formControlName="interests" rows="2" type="text"
+            class="form-control" placeholder="Interests"></textarea>
+        <div *ngIf="registerForm.get('interests').hasError('required')" class="invalid-feedback">Tell People about your
+            interests</div>
+    </div>
+    <div class="form-group text-center mt-3 mb-5">
+        <button [disabled]="!registerForm.valid" class="btn btn-success mr-2" style="margin-right: 10px;"
+            type="submit">Create</button>
+    </div>
+</form>
+
+<ng-container *ngIf="addPhoto">
+    <div class="content-center" style="min-width: 70%;">
+        <h3 class="text-center">Add Photos</h3>
+        <app-photo-editor [member]="member"></app-photo-editor>
+        <div class="form-group text-center mt-3">
+            <button class="btn btn-primary mr-2" style="margin-right: 10px;" type="button" routerLink="./members">Finish
+                Creating Profile</button>
+        </div>
+    </div>
+</ng-container>

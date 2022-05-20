@@ -20,12 +20,11 @@ import { AccountService } from './account.service';
   providedIn: 'root'
 })
 export class MembersService {
-  baseUrl = environment.dotnetUrl;
-  members: Member[] = [];
+  baseUrl = environment.dotnetUrl;    
   user: User;
   userParams: UserParams;
   likeParams: LikeParams;
-  memberCache= new Map();   // map is like a dictionary in which we have keys and values
+  memberCache = new Map();   // map is like a dictionary in which we have keys and values  
 
   constructor(private http: HttpClient, private accountService : AccountService) { 
     this.accountService.currentUser$.pipe(take(1)).subscribe( user => {
@@ -68,18 +67,20 @@ export class MembersService {
   }
 
   getMemberByAppId(appId: string){
-    const member = this.members.find(x => x.applicationUserId.toString() === appId);
-    if (member !== undefined) return of(member);
+    // const member = this.members.find(x => x.applicationUserId.toString() === appId);
+    // if (member !== undefined) return of(member);     
+
     return this.http.get<Member>(this.baseUrl + 'users/edit/' + appId);
   }
 
   updateMember(member: Member){
-    return this.http.put(this.baseUrl + 'users', member).pipe(
-      map (() => {
-        const index = this.members.indexOf(member);
-        this.members[index] = member;
-      })
-    );
+    // return this.http.put(this.baseUrl + 'users', member).pipe(
+    //   map (() => {
+    //     const index = this.members.indexOf(member);
+    //     this.members[index] = member;
+    //   })
+    // );
+    return this.http.put(this.baseUrl + 'users', member);
   }
 
   setMainPhoto(photoId: number){

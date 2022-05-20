@@ -9,7 +9,7 @@ import { MemberEditComponent } from './members/member-edit/member-edit.component
 import { MemberListComponent } from './members/member-list/member-list.component';
 import { MessagesComponent } from './messages/messages.component';
 import { AuthGuard } from './_guards/auth.guard';
-import { PreventUnsavedChangesGuard } from './_guards/prevent-unsaved-changes.guard';
+import { PreventUnsavedChangesGuard, PreventUnsavedChangesGuardForAddProfile } from './_guards/prevent-unsaved-changes.guard';
 import { MemberDetailResolver } from './_resolvers/member-detail.resolver';
 
 const routes: Routes = [
@@ -19,6 +19,7 @@ const routes: Routes = [
     path: '',
     runGuardsAndResolvers: 'always',
     canActivate: [AuthGuard],
+    canDeactivate: [PreventUnsavedChangesGuardForAddProfile],
     children: [
       {path: 'members', component: MemberListComponent},
       {path: 'member/edit', component: MemberEditComponent, pathMatch: 'full', canDeactivate: [PreventUnsavedChangesGuard]},

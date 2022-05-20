@@ -84,11 +84,16 @@ namespace DatingApp.Data
                 query.ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
                 .AsNoTracking(), 
                     userProfileParams.PageNumber, userProfileParams.PageSize);
-        }
+        } 
 
         public async Task<bool> SaveAllAsync()
         {
             return await _context.SaveChangesAsync() > 0;
+        }
+        public void Add(UserProfile userProfile)
+        {
+            _context.Entry(userProfile).State = EntityState.Added;
+            //_context.UserProfile.Add(userProfile);
         }
 
         //Marking an Entity that has modified or not

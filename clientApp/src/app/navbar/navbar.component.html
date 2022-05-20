@@ -43,8 +43,7 @@
         <form #loginForm="ngForm" class="d-flex" style="margin-left:auto" (ngSubmit)="login()" autocomplete="off" *ngIf="!(accountService.currentUser$ | async)">
           <input name="username" [(ngModel)]="model.username" class="form-control me-2" type="text" placeholder="Username" />
           <input name="password" [(ngModel)]="model.password" class="form-control me-2" type="password" placeholder="Password" />
-          <button class="btn text-white btn-secondary btn-outline-success me-2" type="submit">Login</button>
-          <a class="btn btn-secondary btn-outline-success me-2" (click)="registerToggle()">Register</a>
+          <button class="btn text-white btn-secondary btn-outline-success me-2" type="submit">Login</button>          
         </form>        
       </div>
     </div>

@@ -20,8 +20,9 @@ namespace DatingApp.Helpers
             // calling a service from a system
             var repo = resultContext.HttpContext.RequestServices.GetService<IUserProfileRepository>();
             var user = await repo.GetUserByAppIdAsync(userId);
-            user.LastActive = DateTime.Now;
-            await repo.SaveAllAsync();
+            if (user is not null)            
+                user.LastActive = DateTime.Now;
+                await repo.SaveAllAsync();
         }
     }
 }

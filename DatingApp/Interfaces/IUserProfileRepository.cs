@@ -12,6 +12,7 @@ namespace DatingApp.Interfaces
         Task<UserProfileDto> GetUserProfileByAppIdAsync(int id);        
         Task<UserProfileDto> GetUserProfileByIdAsync(int id);
         Task<PagedList<UserProfileDto>> GetUserProfilesAsync(UserProfileParams userProfileParams);
+        void Add(UserProfile userProfile);
         void Update(UserProfile userProfile);
         Task<bool> SaveAllAsync();
     }

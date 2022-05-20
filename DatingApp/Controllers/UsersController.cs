@@ -53,6 +53,19 @@ namespace DatingApp.Controllers
             return await _userProfileRepository.GetUserProfileByAppIdAsync(id);
         }
 
+        [HttpPost("add-profile")]
+        public async Task<ActionResult> AddUser(UserProfileCreateDto userProfileDto)
+        {
+            userProfileDto.ApplicationUserId = User.GetAppUserId();
+            var userProfile = _mapper.Map<UserProfile>(userProfileDto);            
+            
+            _userProfileRepository.Add(userProfile);
+
+            if (await _userProfileRepository.SaveAllAsync()) return Ok(_mapper.Map<UserProfileDto>(userProfile));
+
+            return BadRequest("Problem adding Profile");
+        }
+
         [HttpPut]
         public async Task<ActionResult> UpdateUser(UserProfileUpdateDto userProfileUpdateDto)
         {

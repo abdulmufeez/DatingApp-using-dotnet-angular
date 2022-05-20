@@ -5,7 +5,7 @@ namespace DatingApp.DTOs
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }        
-        public string KnownAs { get; set; }        
+        public string KnownAs { get; set; }      
         public string Gender { get; set; }        
         public string Introduction { get; set; }
         public string LookingFor { get; set; }
