@@ -1,14 +1,20 @@
 using DatingApp.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Data
 {
-    public class DataContext : DbContext
+    // because we have to use int as key thats why we have seperate initilizing everything
+    public class DataContext : IdentityDbContext<ApplicationUser, 
+        AppRole, int, IdentityUserClaim<int>, 
+        AppUserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
         public DataContext(DbContextOptions options) : base(options)
         {
         }        
-        public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
+        // because we added identity
+        //public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
         public DbSet<UserProfile> UserProfile { get; set; }
         public DbSet<UserLike> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
@@ -17,6 +23,18 @@ namespace DatingApp.Data
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationUser>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.User)
+                .HasForeignKey(ur => ur.UserId)
+                .IsRequired();
+
+            modelBuilder.Entity<AppRole>()
+                .HasMany(ur => ur.UserRoles)
+                .WithOne(u => u.Role)
+                .HasForeignKey(ur => ur.RoleId)
+                .IsRequired();
 
             // for likes
             // creating a primary key with the combination of both keys

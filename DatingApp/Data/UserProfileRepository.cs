@@ -35,7 +35,7 @@ namespace DatingApp.Data
 
         public async Task<UserProfile> GetUserByUserNameAsync(string username)
         {
-            var user = await _context.ApplicationUser
+            var user = await _context.Users
                 .SingleOrDefaultAsync(m => m.UserName == username);
 
             var userProfile = await _context.UserProfile

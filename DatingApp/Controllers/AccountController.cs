@@ -32,17 +32,13 @@ namespace DatingApp.Controllers
             if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
             if (await UserEmailExists(registerDto.Email)) return BadRequest("Email is already taken");
 
-            using var hmac = new HMACSHA512();
-
             var user = new ApplicationUser()
             {
                 UserName = registerDto.Username.ToLower(),
-                Email = registerDto.Email,
-                HashedPassword = hmac.ComputeHash(Encoding.UTF8.GetBytes(registerDto.Password)),
-                SaltPassword = hmac.Key
+                Email = registerDto.Email,                
             };
 
-            _context.ApplicationUser.Add(user);
+            _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
             return new ApplicationUserDto
@@ -56,17 +52,9 @@ namespace DatingApp.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ApplicationUserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.ApplicationUser.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+            var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
 
-            if (user == null) return Unauthorized("Invalid Username");
-
-            using var hmac = new HMACSHA512(user.SaltPassword);
-            var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(loginDto.Password));
-
-            for (int i = 0; i < computedHash.Length; i++)
-            {
-                if (computedHash[i] != user.HashedPassword[i]) return Unauthorized("Invalid Password");
-            }
+            if (user == null) return Unauthorized("Invalid Username");            
 
             var userProfile = await _context.UserProfile
                 .Include(p => p.Photos)
@@ -97,9 +85,9 @@ namespace DatingApp.Controllers
 
         //checking if username is already exist
         private async Task<bool> UserExists(string username)
-            => await _context.ApplicationUser.AnyAsync(user => user.UserName == username.ToLower());
+            => await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
 
         private async Task<bool> UserEmailExists(string email)
-            => await _context.ApplicationUser.AnyAsync(user => user.Email == email);
+            => await _context.Users.AnyAsync(user => user.Email == email);
     }
 }

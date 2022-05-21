@@ -1,16 +1,11 @@
-using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Identity;
 
 namespace DatingApp.Entities
 {
-    public class ApplicationUser
-    {
-        public int Id { get; set; }                        
-        public string UserName { get; set; } = null!;       //= null! is used for not null feild
-
-        [Required]
-        public string Email { get; set; }
+    // by default identity use id as a string so, we have to explicitly tell it to use int by <int>
+    public class ApplicationUser : IdentityUser<int>
+    {        
         public DateTime CreatedAt { get; set; } = DateTime.Now;
-        public byte[] HashedPassword { get; set; }
-        public byte[] SaltPassword { get; set; }        
-    }
+        public ICollection<AppUserRole> UserRoles { get; set; }    
+    }    
 }

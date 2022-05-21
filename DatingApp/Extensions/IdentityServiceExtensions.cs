@@ -1,5 +1,8 @@
 using System.Text;
+using DatingApp.Data;
+using DatingApp.Entities;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.Extensions
@@ -9,6 +12,18 @@ namespace DatingApp.Extensions
         public static IServiceCollection AddIdentityService(this IServiceCollection services,
             IConfiguration config)
         {
+            services.AddIdentityCore<ApplicationUser>(opt =>
+            {
+                // in here you can customize anything
+                opt.Password.RequireNonAlphanumeric = false;
+            })
+                // below all are the configuration for identity
+                .AddRoles<AppRole>()
+                .AddRoleManager<RoleManager<AppRole>>()
+                .AddSignInManager<SignInManager<ApplicationUser>>()
+                .AddRoleValidator<RoleValidator<AppRole>>()
+                .AddEntityFrameworkStores<DataContext>();
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
             {
@@ -19,7 +34,7 @@ namespace DatingApp.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
-            });
+            });            
 
             return services;
         }

@@ -27,27 +27,28 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 
 
-// ======================================================================
+// ====================================================================================
 // this section is used for data seeding 
 //
 // creating a service container which call any service running already in application
-// using var scope = app.Services.CreateScope();
-// var services = scope.ServiceProvider;
-// //
-// try
-// {
-//     //calling datacontect service
-//     var context = services.GetRequiredService<DataContext>();
-//     await context.Database.MigrateAsync();
-//     //seeding data 
-//     await Seed.SeedUserProfiles(context);
-// }
-// catch (Exception ex)
-// {
-//     //calling logger service
-//     var logger = app.Services.GetRequiredService<ILogger<Program>>();
-//     logger.LogError(ex, "An error occurred while seeding user profile");
-// }
+using var scope = app.Services.CreateScope();
+var services = scope.ServiceProvider;
+//
+try
+{
+    //calling datacontect service
+    var context = services.GetRequiredService<DataContext>();
+    await context.Database.MigrateAsync();
+    //seeding data 
+    //await Seed.SeedUserProfiles(context);
+}
+catch (Exception ex)
+{
+    //calling logger service
+    var logger = app.Services.GetRequiredService<ILogger<Program>>();
+    logger.LogError(ex, ex.Message);
+}
+// ==========================================================================================
 
 //using custom middleware for exceptions
 app.UseMiddleware<ExceptionMiddleware>();
