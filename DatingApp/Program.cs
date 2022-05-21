@@ -38,8 +38,12 @@ try
 {
     //calling datacontect service
     var context = services.GetRequiredService<DataContext>();
+    //var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    
     await context.Database.MigrateAsync();
+
     //seeding data 
+    //await Seed.SeedAppUsers(userManager);
     //await Seed.SeedUserProfiles(context);
 }
 catch (Exception ex)

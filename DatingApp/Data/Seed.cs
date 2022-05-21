@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json;
-using System.Threading.Tasks;
 using DatingApp.Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,6 +7,24 @@ namespace DatingApp.Data
     //this is data seeding class
     public class Seed
     {   
+        // public static async Task SeedAppUsers(UserManager<ApplicationUser> userManager)
+        // {
+        //     // check if already seed
+        //     if (await userManager.Users.AnyAsync()) return;
+
+        //     //reading data from a json file
+        //     var appUserData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ApplicationUserSeedData.json");
+        //     var appUsers = JsonSerializer.Deserialize<List<ApplicationUser>>(appUserData);
+        //     if (appUsers is null) return;
+
+        //     //adding to database schema
+        //     foreach (var appUser in appUsers)
+        //     {                                                                
+        //         await userManager.CreateAsync(appUser,"Example8");
+        //     }            
+        // }
+
+        // ==========================================================================================================
         public static async Task SeedUserProfiles(DataContext _context)
         {
             // check if already seed
@@ -20,14 +34,14 @@ namespace DatingApp.Data
             var userProfileData = await System.IO.File.ReadAllTextAsync("Data/SeedData/UserProfileSeedData.json");
             var userProfiles = JsonSerializer.Deserialize<List<UserProfile>>(userProfileData);
 
+            var AppUserId = 1;
             //adding to database schema
             foreach (var userProfile in userProfiles)
-            {                                
-                // userProfile.ProfileCreatedAt = DateTime.Now;
-                // userProfile.DateOfBirth = RandomDayFunc()();
-                // userProfile.LastActive = RandomDayFunc()();
+            {                                                
+                //userProfile.DateOfBirth = RandomDayFunc()();
+                userProfile.LastActive = RandomDayFunc()();
+                userProfile.ApplicationUserId = AppUserId++;
 
-                userProfile.ApplicationUserId = 1;
                 _context.UserProfile.Add(userProfile);
             }
 
