@@ -40,7 +40,7 @@ namespace DatingApp.Controllers
             return Ok(userProfiles);
         }
 
-        //api/user/2
+        //api/users/2
         [HttpGet("{id}", Name = "GetUser")]
         public async Task<ActionResult<UserProfileDto>> GetUser(int id)
         {

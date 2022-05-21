@@ -1,14 +1,10 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
+using AutoMapper;
 using DatingApp.Data;
 using DatingApp.DTOs;
 using DatingApp.Entities;
 using DatingApp.Extensions;
 using DatingApp.Interfaces;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,12 +12,18 @@ namespace DatingApp.Controllers
 {
     public class AccountController : BaseController
     {
-        private readonly DataContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly DataContext _context;  
+        private readonly IMapper _mapper;
         private readonly ITokenService _tokenService;
 
-        public AccountController(DataContext context, ITokenService tokenService)
+        public AccountController(UserManager<ApplicationUser> userManager, SignInManager<ApplicationUser> signInManager, DataContext context, IMapper mapper, ITokenService tokenService)
         {
+            _userManager = userManager;
+            _signInManager = signInManager; 
             _context = context;
+            _mapper = mapper;           
             _tokenService = tokenService;
         }
 
@@ -32,14 +34,13 @@ namespace DatingApp.Controllers
             if (await UserExists(registerDto.Username)) return BadRequest("Username is already taken");
             if (await UserEmailExists(registerDto.Email)) return BadRequest("Email is already taken");
 
-            var user = new ApplicationUser()
-            {
-                UserName = registerDto.Username.ToLower(),
-                Email = registerDto.Email,                
-            };
+            var user = _mapper.Map<ApplicationUser>(registerDto);
 
-            _context.Users.Add(user);
-            await _context.SaveChangesAsync();
+            user.UserName = registerDto.Username.ToLower();
+
+            var result = await _userManager.CreateAsync(user, registerDto.Password);
+
+            if (!result.Succeeded) return BadRequest(result.Errors);
 
             return new ApplicationUserDto
             {
@@ -52,9 +53,13 @@ namespace DatingApp.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ApplicationUserDto>> Login(LoginDto loginDto)
         {
-            var user = await _context.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username);
+            var user = await _userManager.Users.SingleOrDefaultAsync(user => user.UserName == loginDto.Username.ToLower());
 
-            if (user == null) return Unauthorized("Invalid Username");            
+            if (user == null) return Unauthorized("Invalid Username"); 
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+
+            if (!result.Succeeded) return Unauthorized("Invalid password");           
 
             var userProfile = await _context.UserProfile
                 .Include(p => p.Photos)
@@ -85,9 +90,9 @@ namespace DatingApp.Controllers
 
         //checking if username is already exist
         private async Task<bool> UserExists(string username)
-            => await _context.Users.AnyAsync(user => user.UserName == username.ToLower());
+            => await _userManager.Users.AnyAsync(user => user.UserName == username.ToLower());
 
         private async Task<bool> UserEmailExists(string email)
-            => await _context.Users.AnyAsync(user => user.Email == email);
+            => await _userManager.Users.AnyAsync(user => user.Email == email);
     }
 }
