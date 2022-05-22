@@ -1,5 +1,6 @@
 using System.Text.Json;
 using DatingApp.Entities;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace DatingApp.Data
@@ -7,22 +8,51 @@ namespace DatingApp.Data
     //this is data seeding class
     public class Seed
     {   
-        // public static async Task SeedAppUsers(UserManager<ApplicationUser> userManager)
-        // {
-        //     // check if already seed
-        //     if (await userManager.Users.AnyAsync()) return;
+        public static async Task SeedAppUsers(UserManager<ApplicationUser> userManager, RoleManager<AppRole> roleManager)
+        {
+            // check if already seed
+            if (await userManager.Users.AnyAsync()) return;
 
-        //     //reading data from a json file
-        //     var appUserData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ApplicationUserSeedData.json");
-        //     var appUsers = JsonSerializer.Deserialize<List<ApplicationUser>>(appUserData);
-        //     if (appUsers is null) return;
+            //reading data from a json file
+            var appUserData = await System.IO.File.ReadAllTextAsync("Data/SeedData/ApplicationUserSeedData.json");
+            var appUsers = JsonSerializer.Deserialize<List<ApplicationUser>>(appUserData);
+            if (appUsers is null) return;
 
-        //     //adding to database schema
-        //     foreach (var appUser in appUsers)
-        //     {                                                                
-        //         await userManager.CreateAsync(appUser,"Example8");
-        //     }            
-        // }
+            var roles = new  List<AppRole>
+            {
+                new AppRole{Name = "Admin"},
+                new AppRole{Name = "Moderator"},
+                new AppRole{Name = "Member"}
+            };
+
+            foreach (var role in roles)
+            {
+                await roleManager.CreateAsync(role);
+            }
+
+            //adding to database schema
+            foreach (var appUser in appUsers)
+            {   appUser.UserName = appUser.UserName.ToLower();                                                             
+                await userManager.CreateAsync(appUser,"Example8");
+                await userManager.AddToRoleAsync(appUser, "Member");
+            }            
+
+            var admin = new ApplicationUser
+            {
+                UserName = "admin",
+                Email = "admin@example.com"                
+            };
+            await userManager.CreateAsync(admin, "Example8");
+            await userManager.AddToRolesAsync(admin, new[] {"Admin","Moderator"});    
+
+            var moderator = new ApplicationUser
+            {
+                UserName = "moderator",
+                Email = "moderator@example.com"
+            };
+            await userManager.CreateAsync(moderator, "Example8");
+            await userManager.AddToRoleAsync(moderator, "Moderator");
+        }
 
         // ==========================================================================================================
         public static async Task SeedUserProfiles(DataContext _context)
@@ -38,7 +68,7 @@ namespace DatingApp.Data
             //adding to database schema
             foreach (var userProfile in userProfiles)
             {                                                
-                //userProfile.DateOfBirth = RandomDayFunc()();
+                userProfile.DateOfBirth = RandomDayFunc()();
                 userProfile.LastActive = RandomDayFunc()();
                 userProfile.ApplicationUserId = AppUserId++;
 
@@ -51,7 +81,7 @@ namespace DatingApp.Data
         //generate random datetime format date    
         public static Func<DateTime> RandomDayFunc()
         {
-            DateTime start = new DateTime(1995, 1, 1);
+            DateTime start = new DateTime(1980, 1, 1);
             Random gen = new Random();
             int range = ((TimeSpan)(DateTime.Today - start)).Days;
             return () => start.AddDays(gen.Next(range));

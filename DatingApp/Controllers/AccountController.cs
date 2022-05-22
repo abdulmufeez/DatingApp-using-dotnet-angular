@@ -42,11 +42,15 @@ namespace DatingApp.Controllers
 
             if (!result.Succeeded) return BadRequest(result.Errors);
 
+            var roleResult = await _userManager.AddToRoleAsync(user, "Member");
+
+            if (!roleResult.Succeeded) return BadRequest(roleResult.Errors);
+
             return new ApplicationUserDto
             {
                 Id = user.Id,
                 Username = user.UserName,
-                Token = _tokenService.CreateToken(user)
+                Token = await _tokenService.CreateToken(user)
             };
         }
 
@@ -63,25 +67,14 @@ namespace DatingApp.Controllers
 
             var userProfile = await _context.UserProfile
                 .Include(p => p.Photos)
-                .SingleOrDefaultAsync(m => m.ApplicationUserId == user.Id);
-
-            if (userProfile == null)
-            {
-                return new ApplicationUserDto
-                {
-                    Id = user.Id,
-                    Username = user.UserName,
-                    PhotoUrl = null,
-                    Token = _tokenService.CreateToken(user)
-                };
-            }
+                .SingleOrDefaultAsync(m => m.ApplicationUserId == user.Id);     
 
             return new ApplicationUserDto
             {
                 Id = user.Id,
                 Username = user.UserName,
                 PhotoUrl = userProfile.Photos.SingleOrDefault(p => p.IsMain)?.Url,
-                Token = _tokenService.CreateToken(user),
+                Token = await _tokenService.CreateToken(user),
                 Gender = userProfile.Gender,
                 KnownAs = userProfile.KnownAs,
                 Age = userProfile.DateOfBirth.CalculateAge()

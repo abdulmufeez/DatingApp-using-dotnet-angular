@@ -1,6 +1,8 @@
 using DatingApp.Data;
+using DatingApp.Entities;
 using DatingApp.Extensions;
 using DatingApp.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 
@@ -36,25 +38,26 @@ var services = scope.ServiceProvider;
 //
 try
 {
-    //calling datacontect service
+    // calling datacontect service
     var context = services.GetRequiredService<DataContext>();
-    //var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
+    var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
     
     await context.Database.MigrateAsync();
 
     //seeding data 
-    //await Seed.SeedAppUsers(userManager);
+    //await Seed.SeedAppUsers(userManager, roleManager);
     //await Seed.SeedUserProfiles(context);
 }
 catch (Exception ex)
 {
-    //calling logger service
+    // calling logger service
     var logger = app.Services.GetRequiredService<ILogger<Program>>();
     logger.LogError(ex, ex.Message);
 }
 // ==========================================================================================
 
-//using custom middleware for exceptions
+// using custom middleware for exceptions
 app.UseMiddleware<ExceptionMiddleware>();
 
 app.UseHttpsRedirection();
