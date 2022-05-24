@@ -12,6 +12,7 @@ import { AccountService } from '../_services/account.service';
 })
 export class NavbarComponent implements OnInit {
   model: any = {}   //initilize empty object with dynamic type
+  appHasRole: string[] = ["Admin", "Moderator"]
 
   constructor(public accountService: AccountService,
     private router: Router,

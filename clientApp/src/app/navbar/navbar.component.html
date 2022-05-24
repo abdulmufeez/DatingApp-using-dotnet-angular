@@ -18,7 +18,7 @@
           <li class="nav-item">
             <a class="nav-link" routerLink="/messages" routerLinkActive="active">Messages</a>
           </li>
-          <li class="nav-item">
+          <li class="nav-item" *appHasRole = '["Admin", "Moderator"]'>
             <a class="nav-link" routerLink="/admin" routerLinkActive="active">Admin Panel</a>
           </li>
         </ul>                
@@ -30,7 +30,7 @@
 
           <a id="button-basic" dropdownToggle type="button" class="dropdown-toggle text-white mt-2"
                   aria-controls="dropdown-basic">
-            Welcome {{(user.knownAs || user.username) | titlecase}} <span class="caret"></span>
+            Welcome {{user.knownAs || user.username | titlecase}} <span class="caret"></span>
           </a>
           <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu mt-3"
               role="menu" aria-labelledby="button-basic">
