@@ -23,6 +23,7 @@ import { TextInputsComponent } from './_forms/text-inputs/text-inputs.component'
 import { DateInputComponent } from './_forms/date-input/date-input.component';
 import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
 import { UserProfileFormComponent } from './user-profile-form/user-profile-form.component';
+import { AdminPanelComponent } from './admin/admin-panel/admin-panel.component';
 
 @NgModule({
   declarations: [
@@ -42,7 +43,8 @@ import { UserProfileFormComponent } from './user-profile-form/user-profile-form.
     TextInputsComponent,
     DateInputComponent,
     MemberMessagesComponent,
-    UserProfileFormComponent
+    UserProfileFormComponent,
+    AdminPanelComponent
   ],
   imports: [
     BrowserModule,
