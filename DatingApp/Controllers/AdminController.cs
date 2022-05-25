@@ -49,7 +49,7 @@ namespace DatingApp.Controllers
 
             if (!result.Succeeded) return BadRequest("Failed to add roles");
 
-            result = await _userManager.AddToRolesAsync(user, userRoles.Except(selectedRoles));
+            result = await _userManager.RemoveFromRolesAsync(user, userRoles.Except(selectedRoles));
 
             if (!result.Succeeded) return BadRequest("Failed to remove from roles");
 

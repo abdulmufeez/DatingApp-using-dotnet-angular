@@ -14,4 +14,8 @@ export class AdminService {
   getUsersWithRole() {
     return this.http.get<Partial<User[]>>(this.baseUrl + 'admin/users-with-roles');
   }
+
+  updateUserRoles(userId: number, roles: string){
+    return this.http.post(this.baseUrl + 'admin/edit-roles/' + userId.toString() + '?roles=' + roles, {});
+  }
 }
