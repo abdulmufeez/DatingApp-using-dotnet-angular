@@ -66,6 +66,7 @@ namespace DatingApp.Data
             var query = _context.UserProfile.AsQueryable();
 
             // Filtering result
+            query = query.Where(u => !u.isDisabled);
             query = query.Where(u => u.ApplicationUserId != userProfileParams.CurrentUserId);
             query = query.Where(u => u.Gender == userProfileParams.Gender);
 

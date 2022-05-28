@@ -7,4 +7,5 @@ export interface User {
     knownAs: string;
     age: number;
     roles: string[];
+    isDisabled: boolean;
 }

@@ -17,6 +17,7 @@ import { environment } from 'src/environments/environment';
   ]
 })
 export class PhotoEditorComponent implements OnInit {
+  @Input() isMemberDisabled: boolean;
   @Input() member: Member;
   user: User;
   baseUrl = environment.dotnetUrl;

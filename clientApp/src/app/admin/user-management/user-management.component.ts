@@ -51,6 +51,12 @@ export class UserManagementComponent implements OnInit {
     })
   }
 
+  disableAccount(user: User, isDisabled: string){
+    this.adminService.disableAccount(user.id, isDisabled).subscribe(() => {      
+      this.getUsersWithRoles();
+    })
+  }
+
   private getRolesArray(user: User) {
     const roles = [];
     const userRoles = user.roles;

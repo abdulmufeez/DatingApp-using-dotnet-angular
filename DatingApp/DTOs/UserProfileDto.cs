@@ -24,6 +24,7 @@ namespace DatingApp.DTOs
         public string Country { get; set; }
         [Required]
         public string City { get; set; }
+        public bool isDisabled { get; set; }
         public int ApplicationUserId { get; set; }
         public ICollection<PhotoDto> Photos { get; set; }                  
     }

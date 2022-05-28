@@ -18,4 +18,8 @@ export class AdminService {
   updateUserRoles(userId: number, roles: string){
     return this.http.post(this.baseUrl + 'admin/edit-roles/' + userId.toString() + '?roles=' + roles, {});
   }
+
+  disableAccount(userId: number, isDisabled: string){
+    return this.http.put(this.baseUrl + 'admin/disable-account/' + userId + '?isDisabled=' + isDisabled, {});
+  }
 }

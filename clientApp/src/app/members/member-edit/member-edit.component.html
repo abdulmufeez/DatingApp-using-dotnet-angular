@@ -7,6 +7,9 @@
         <div class="alert alert-info" *ngIf="editForm.dirty">
             <strong>Information: </strong> You have made changes, if not saved, changes will be lost
         </div>
+        <div class="alert alert-warning" *ngIf="member.isDisabled">
+            <strong>Information: </strong> Your account has been disabled by the app! contact administrator
+        </div>
     </div>
     <div class="col-4 mt-5">
         <div class="card">
@@ -32,7 +35,7 @@
                 </div>
             </div>
             <div class="card-footer">
-                <button [disabled]="!editForm.dirty" form="editForm" type="submit" class="btn btn-info btn-block form-control">Save Changes</button>
+                <button [disabled]="!editForm.dirty || member.isDisabled" form="editForm" type="submit" class="btn btn-info btn-block form-control">Save Changes</button>
             </div>
         </div>
     </div>
@@ -44,52 +47,52 @@
                         <h5>Personal Details</h5>
                         <div class="col-md-6">
                             <label for="firstName">First Name:</label>
-                            <input [(ngModel)]="member.firstName" type="text" name="firstName" class="form-control">
+                            <input [(ngModel)]="member.firstName" [disabled]="member.isDisabled" type="text" name="firstName" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label for="lastName">Last Name:</label>
-                            <input [(ngModel)]="member.lastName" type="text" name="lastName" class="form-control">
+                            <input [(ngModel)]="member.lastName" [disabled]="member.isDisabled" type="text" name="lastName" class="form-control">
                         </div>
                         <div class="mt-2"></div>
                         <div class="col-md-6">
                             <label for="lastName">Known As:</label>
-                            <input [(ngModel)]="member.knownAs" type="text" name="knownAs" class="form-control">
+                            <input [(ngModel)]="member.knownAs" [disabled]="member.isDisabled" type="text" name="knownAs" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label for="lastName">Gender:</label>
-                            <input [(ngModel)]="member.gender" type="text" name="gender" class="form-control">
+                            <input [(ngModel)]="member.gender" [disabled]="member.isDisabled" type="text" name="gender" class="form-control">
                         </div>
                     </div>
                     <div class="row mt-2 form-group form-inline">
                         <h5>Location Details</h5>
                         <div class="col-md-6">
                             <label for="city">City:</label>
-                            <input [(ngModel)]="member.city" type="text" name="city" class="form-control">
+                            <input [(ngModel)]="member.city" [disabled]="member.isDisabled" type="text" name="city" class="form-control">
                         </div>
                         <div class="col-md-6">
                             <label for="country">Country:</label>
-                            <input [(ngModel)]="member.country" type="text" name="country" class="form-control">
+                            <input [(ngModel)]="member.country" [disabled]="member.isDisabled" type="text" name="country" class="form-control">
                         </div>
                     </div>
                     <div class="mt-2 form-group">
                         <h5>Description</h5>
-                        <textarea [(ngModel)]="member.introduction" name="introduction" class="form-control"
+                        <textarea [(ngModel)]="member.introduction" [disabled]="member.isDisabled" name="introduction" class="form-control"
                             rows="2"></textarea>
                     </div>
                     <div class="mt-2 form-group">
                         <h5>Looking For</h5>
-                        <textarea [(ngModel)]="member.lookingFor" name="lookingFor" class="form-control"
+                        <textarea [(ngModel)]="member.lookingFor" [disabled]="member.isDisabled" name="lookingFor" class="form-control"
                             rows="2"></textarea>
                     </div>
                     <div class="mt-2 form-group">
                         <h5>Interests</h5>
-                        <textarea [(ngModel)]="member.interests" name="interests" class="form-control"
+                        <textarea [(ngModel)]="member.interests" [disabled]="member.isDisabled" name="interests" class="form-control"
                             rows="2"></textarea>
                     </div>
                 </form>
             </tab>
             <tab heading='Edit Photos'>
-                <app-photo-editor [member]="member"></app-photo-editor>
+                <app-photo-editor [member]="member" [isMemberDisabled]="member.isDisabled"></app-photo-editor>
             </tab>
         </tabset>
     </div>

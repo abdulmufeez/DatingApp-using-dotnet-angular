@@ -15,6 +15,7 @@ export interface Member {
     interests:         string;
     country:           string;
     city:              string;
+    isDisabled:        boolean;
     applicationUserId: number;
     photos:            Photo[];
 }

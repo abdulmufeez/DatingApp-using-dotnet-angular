@@ -10,6 +10,6 @@ export class UserParams {
 
     constructor(user: User){
         this.gender = user.gender === 'female' ? 'male' : 'female';
-        this.maxAge = user.age + 5;
+        this.maxAge = user.age + 10;
     }
 }
