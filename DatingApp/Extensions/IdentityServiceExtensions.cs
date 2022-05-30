@@ -34,6 +34,24 @@ namespace DatingApp.Extensions
                     ValidateIssuer = false,
                     ValidateAudience = false
                 };
+
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        // getting accessToken from jwt response
+                        var accessToken = context.Request.Query["access_token"];
+
+                        // check the path where access_token comes from
+                        var path = context.HttpContext.Request.Path;
+                        if(!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs"))
+                        {
+                            context.Token = accessToken;
+                        } 
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
             services.AddAuthorization(opt =>

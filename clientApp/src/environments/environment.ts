@@ -4,7 +4,8 @@
 
 export const environment = {
   production: false,
-  dotnetUrl: 'https://localhost:7297/api/'
+  dotnetUrl: 'https://localhost:7297/api/',
+  dotnetHubUrl: 'https://localhost:7297/hubs/'
 };
 
 /*

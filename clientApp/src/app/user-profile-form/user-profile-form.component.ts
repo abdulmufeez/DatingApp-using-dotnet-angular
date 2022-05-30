@@ -2,6 +2,8 @@ import { Component, HostListener, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, NgForm, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
 import { Member } from '../_models/member';
+import { User } from '../_models/User';
+import { UserPresenceService } from '../_services/user-presence.service';
 import { UserProfileService } from '../_services/user-profile.service';
 
 @Component({
@@ -12,11 +14,11 @@ import { UserProfileService } from '../_services/user-profile.service';
 })
 export class UserProfileFormComponent implements OnInit {
   member: Member;
-  addPhoto: boolean = false;  
+  addPhoto: boolean = false;
   registerForm: FormGroup;
   validationErrors: string[] = [];
   maxDate: Date;
-  
+
   @ViewChild('addProfileForm') addProfileForm: NgForm;
   // preventing any action without saving data
   @HostListener('window:beforeunload', ['$event']) unloadNotification($event: any) {
@@ -27,7 +29,8 @@ export class UserProfileFormComponent implements OnInit {
 
   constructor(private userProfileService: UserProfileService,
     private toastr: ToastrService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private presenceHubService: UserPresenceService) { }
 
   ngOnInit(): void {
     this.initilizeForm();
@@ -51,11 +54,16 @@ export class UserProfileFormComponent implements OnInit {
     });
   }
 
-  addProfile() {    
+  addProfile() {
     this.userProfileService.addProfile(this.registerForm.value).subscribe(response => {
       this.member = response;
       this.toastr.success("Profile Created SuccessFully");
       this.addPhoto = true;
+      
+      const user: User = JSON.parse(localStorage.getItem('user.info'));
+      if (user) {
+        this.presenceHubService.createHubConnection(user);
+      }
     }, err => {
       this.validationErrors = err;
       console.log(err);

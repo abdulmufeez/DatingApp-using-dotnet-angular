@@ -2,6 +2,7 @@ using DatingApp.Data;
 using DatingApp.Entities;
 using DatingApp.Extensions;
 using DatingApp.Middlewares;
+using DatingApp.SignalR;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +20,8 @@ builder.Services.AddCors();
 
 //Identity related service extension
 builder.Services.AddIdentityService(builder.Configuration);
+
+builder.Services.AddSignalR();
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -42,7 +45,7 @@ try
     var context = services.GetRequiredService<DataContext>();
     var userManager = services.GetRequiredService<UserManager<ApplicationUser>>();
     var roleManager = services.GetRequiredService<RoleManager<AppRole>>();
-    
+
     await context.Database.MigrateAsync();
 
     //seeding data 
@@ -65,12 +68,18 @@ app.UseHttpsRedirection();
 //Reading data from appsetting.json file
 var externalUrl = builder.Configuration.GetValue<string>("angularApplicationUrl");
 //assigning policy for Cross Origin Response
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins(externalUrl));
+app.UseCors(policy => policy.AllowAnyHeader()
+    .AllowAnyMethod()
+    // for SignalR 
+    .AllowCredentials()
+    .WithOrigins(externalUrl));
 
 app.UseAuthentication();
 
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.MapHub<PresenceHub>("hubs/presence");
 
 app.Run();

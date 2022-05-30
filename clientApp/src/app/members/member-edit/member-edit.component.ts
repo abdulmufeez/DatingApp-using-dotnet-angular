@@ -34,8 +34,7 @@ export class MemberEditComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.loadMember();  
-    this.editForm.controls     
+    this.loadMember();      
   }
   
   loadMember(){
