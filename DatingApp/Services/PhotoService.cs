@@ -10,7 +10,7 @@ namespace DatingApp.Services
     {
         private readonly Cloudinary _cloudinary;
 
-        // when you used a class to store configurations parameter just like a do for cloudinary we user IOptions
+        // when you used a class to store configurations parameter just like we do for cloudinary we user IOptions
         public PhotoService(IOptions<CloudinarySettings> config)
         {
             var acc = new Account

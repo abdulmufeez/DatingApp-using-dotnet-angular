@@ -14,19 +14,19 @@ export class MemberMessagesComponent implements OnInit {
   @Input() messages: Message[];
   @Input() recipientId: number;
   messageContent: string;
+  loading = false;
 
-  constructor(private messageService: MessageService) { }
+  constructor(public messageService: MessageService) { }
 
   ngOnInit(): void {    
   }
 
-  
-
   sendMessage(){
-    this.messageService.sendMessage(this.recipientId, this.messageContent).subscribe(message => {
-      this.messages.push(message);
+    this.loading = true;
+    this.messageService.sendMessage(this.recipientId, this.messageContent).then(() => {
+      // this.messages.push(message);
       this.messageForm.reset(); 
-    })
+    }).finally(() => this.loading = false);
   }
 
   deleteMessage(id: number, deleteBoth:string){

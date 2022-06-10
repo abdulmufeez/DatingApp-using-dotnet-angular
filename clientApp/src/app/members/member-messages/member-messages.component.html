@@ -1,11 +1,11 @@
 <div class="card">
-    <div class="card-body">
-        <div *ngIf="messages?.length === 0">
+    <div class="card-body" #scrollMe style="overflow: scroll; height: 550px;" [scrollTop]="scrollMe.scrollHeight">
+        <div *ngIf="(messageService.messageThread$ | async)?.length === 0">
             No messages yet... say hi by using the message box below
         </div>
 
-        <ul *ngIf="messages?.length > 0" class="chat">
-            <li *ngFor="let message of messages">
+        <ul *ngIf="(messageService.messageThread$ | async)?.length > 0" class="chat">
+            <li *ngFor="let message of (messageService.messageThread$ | async)">
                 <div>
                     <span class="chat-img">
                         <img class="rounded-circle" src="{{message.senderPhotoUrl || './assets/user.png'}}"
@@ -28,12 +28,14 @@
                                         class="dropdown-toggle" aria-controls="dropdown-basic">
                                         <i class="fa fa-trash"></i> <span class="caret"></span>
                                     </a>
-                                    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu" 
+                                    <ul id="dropdown-basic" *dropdownMenu class="dropdown-menu" role="menu"
                                         aria-labelledby="button-basic">
-                                        <li role="menuitem"><a class="dropdown-item "
-                                                (click)="$event.stopPropagation()" (click)="deleteMessage(message.id,'false')"><i class="fa fa-user"> Delete for me</i></a></li>                                        
-                                        <li role="menuitem"><a class="dropdown-item"
-                                                (click)="$event.stopPropagation()" (click)="deleteMessage(message.id,'true')"><i class="fa fa-users"> Delete for all</i></a></li>
+                                        <li role="menuitem"><a class="dropdown-item " (click)="$event.stopPropagation()"
+                                                (click)="deleteMessage(message.id,'false')"><i class="fa fa-user">
+                                                    Delete for me</i></a></li>
+                                        <li role="menuitem"><a class="dropdown-item" (click)="$event.stopPropagation()"
+                                                (click)="deleteMessage(message.id,'true')"><i class="fa fa-users">
+                                                    Delete for all</i></a></li>
                                     </ul>
                                 </span>
                             </small>
@@ -51,7 +53,8 @@
                 <input name="messageContent" required [(ngModel)]="messageContent" type="text"
                     class="form-control input-sm" placeholder="Send a private message">
                 <div class="input-group-append">
-                    <button [disabled]="!messageForm.valid" class="btn btn-primary" type="submit">Send</button>
+                    <button [disabled]="!messageForm.valid || loading" class="btn btn-primary"
+                        type="submit">Send</button>
                 </div>
             </div>
         </form>

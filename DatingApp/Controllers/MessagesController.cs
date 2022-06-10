@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
 using AutoMapper;
 using DatingApp.DTOs;
 using DatingApp.Entities;
@@ -11,7 +6,6 @@ using DatingApp.Helpers;
 using DatingApp.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace DatingApp.Controllers
 {
@@ -34,11 +28,11 @@ namespace DatingApp.Controllers
         [HttpPost]
         public async Task<ActionResult<MessageDto>> CreateMessage(CreateMessageDto createMessageDto)
         {
-            var currentUserProfileId = User.GetAppUserId();
-            if (currentUserProfileId == createMessageDto.RecipientId)
+            var currentUserId = User.GetAppUserId();
+            if (currentUserId == createMessageDto.RecipientId)
                 return BadRequest("You cannot send messages to yourself");
 
-            var sender = await _userProfileRepository.GetUserByAppIdAsync(currentUserProfileId);
+            var sender = await _userProfileRepository.GetUserByAppIdAsync(currentUserId);
             var recipient = await _userProfileRepository.GetUserByIdAsync(createMessageDto.RecipientId);
 
             if (recipient is null) return NotFound();
@@ -77,7 +71,7 @@ namespace DatingApp.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<ActionResult> DeleteMessage(int id,[FromQuery] string deletedBoth)
+        public async Task<ActionResult> DeleteMessage(int id, [FromQuery] string deletedBoth)
         {
             var userProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
             var message = await _messageRepository.GetMessage(id);
@@ -96,7 +90,7 @@ namespace DatingApp.Controllers
             }
 
             if (deletedBoth == "true" || deletedBoth == "True")
-                _messageRepository.DeleteMessage(message);            
+                _messageRepository.DeleteMessage(message);
 
             if (await _messageRepository.SaveAllAsync()) return Ok();
 

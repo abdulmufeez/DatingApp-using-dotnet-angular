@@ -9,8 +9,15 @@ namespace DatingApp.Interfaces
         void AddMessage(Message message);
         void DeleteMessage(Message message);
         Task<Message> GetMessage(int id);
+        Task<Group> GetGroupFormConnection(string connectionId);
         Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams);
         Task<IEnumerable<MessageDto>> GetMessagesThread(int sourceId, int recipientId);
         Task<bool> SaveAllAsync();
+
+
+        void AddGroup(Group group);
+        void RemoveConnection(Connection connection);
+        Task<Connection> GetConnection(string connectionId);
+        Task<Group> GetMessageGroup(string groupName);
     }
 }

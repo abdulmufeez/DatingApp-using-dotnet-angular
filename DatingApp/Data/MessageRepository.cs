@@ -23,6 +23,11 @@ namespace DatingApp.Data
             _context = context;
         }
 
+        public void AddGroup(Group group)
+        {
+            _context.Groups.Add(group);
+        }
+
         public void AddMessage(Message message)
         {
             _context.Messages.Add(message);
@@ -33,9 +38,29 @@ namespace DatingApp.Data
             _context.Messages.Remove(message);
         }
 
+        public async Task<Connection> GetConnection(string connectionId)
+        {
+            return await _context.Connections.FindAsync(connectionId);
+        }
+
+        public async Task<Group> GetGroupFormConnection(string connectionId)
+        {
+            return await _context.Groups
+                .Include(c => c.Connections)
+                .Where(c => c.Connections.Any(x => x.ConnectionId == connectionId))
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<Message> GetMessage(int id)
         {
             return await _context.Messages.FindAsync(id);
+        }
+
+        public async Task<Group> GetMessageGroup(string groupName)
+        {
+            return await _context.Groups
+                .Include(x => x.Connections)
+                .FirstOrDefaultAsync(x => x.Name == groupName);
         }
 
         public async Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams)
@@ -48,6 +73,7 @@ namespace DatingApp.Data
             {
                 "Inbox" => query.Where(u => u.RecipientId == messageParams.UserId && u.RecipientDeleted == false),
                 "Outbox" => query.Where(u => u.SenderId == messageParams.UserId && u.SenderDeleted == false),
+                // default is unread 
                 _ => query.Where(u => u.RecipientId == messageParams.UserId && u.MessageRead == null && u.RecipientDeleted == false)    
             };
 
@@ -77,11 +103,16 @@ namespace DatingApp.Data
             {
                 foreach (var message in unreadMessages)
                 {
-                    message.MessageRead = DateTime.Now;
+                    message.MessageRead = DateTime.UtcNow;
                 }
                 await _context.SaveChangesAsync();
             }
             return _mapper.Map<IEnumerable<MessageDto>>(messages);
+        }
+
+        public void RemoveConnection(Connection connection)
+        {
+            _context.Connections.Remove(connection);            
         }
 
         public async Task<bool> SaveAllAsync()
