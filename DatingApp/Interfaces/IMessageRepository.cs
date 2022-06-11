@@ -12,7 +12,7 @@ namespace DatingApp.Interfaces
         Task<Group> GetGroupFormConnection(string connectionId);
         Task<PagedList<MessageDto>> GetMessagesForUser(MessageParams messageParams);
         Task<IEnumerable<MessageDto>> GetMessagesThread(int sourceId, int recipientId);
-        Task<bool> SaveAllAsync();
+        
 
 
         void AddGroup(Group group);

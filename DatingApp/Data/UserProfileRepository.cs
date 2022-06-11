@@ -87,10 +87,7 @@ namespace DatingApp.Data
                     userProfileParams.PageNumber, userProfileParams.PageSize);
         } 
 
-        public async Task<bool> SaveAllAsync()
-        {
-            return await _context.SaveChangesAsync() > 0;
-        }
+        
         public void Add(UserProfile userProfile)
         {
             _context.Entry(userProfile).State = EntityState.Added;

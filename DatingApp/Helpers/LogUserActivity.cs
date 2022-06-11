@@ -18,11 +18,11 @@ namespace DatingApp.Helpers
 
             var userId = resultContext.HttpContext.User.GetAppUserId();
             // calling a service from a system
-            var repo = resultContext.HttpContext.RequestServices.GetService<IUserProfileRepository>();
-            var user = await repo.GetUserByAppIdAsync(userId);
+            var uow = resultContext.HttpContext.RequestServices.GetService<IUnitOfWork>();
+            var user = await uow.UserProfileRepository.GetUserByAppIdAsync(userId);
             if (user is not null)            
-                user.LastActive = DateTime.Now;
-                await repo.SaveAllAsync();
+                user.LastActive = DateTime.UtcNow;
+                await uow.Complete();
         }
     }
 }

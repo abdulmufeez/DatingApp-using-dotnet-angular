@@ -19,9 +19,12 @@ namespace DatingApp.Extensions
             //Only created when its called and terminated afterward
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPhotoService, PhotoService>();
-            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
-            services.AddScoped<ILikesRepository, LikeRepository>();
-            services.AddScoped<IMessageRepository, MessageRepository>();
+           
+            // services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+            // services.AddScoped<ILikesRepository, LikeRepository>();
+            // services.AddScoped<IMessageRepository, MessageRepository>();
+            // because now we implement IUnitOFWork which will handle all this
+            services.AddScoped<IUnitOfWork, UnitOfWork>();        
             services.AddScoped<LogUserActivity>();
 
             services.AddSingleton<PresenceTracker>();            

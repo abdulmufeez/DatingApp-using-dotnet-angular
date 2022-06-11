@@ -7,7 +7,7 @@
         </p>
         <p>All you need to do is sign up, rest is on us.</p>
         <div class="text-center">
-            <button (click)="registerToggle()" class="btn btn-primary btn-lg mr-2" style="margin-right: 10px;">Sign Up</button>
+            <button *ngIf="!loggedIn" (click)="registerToggle()" class="btn btn-primary btn-lg mr-2" style="margin-right: 10px;">Sign Up</button>
             <button class="btn btn-warning btn-lg">Learn more..</button>
         </div>
     </div>

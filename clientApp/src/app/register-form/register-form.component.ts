@@ -11,7 +11,7 @@ import { AccountService } from '../_services/account.service';
 })
 export class RegisterFormComponent implements OnInit {
   @Output() cancelRegister = new EventEmitter();    //used for sending data to parent component  
-  addProfile: boolean = true;
+  addProfile: boolean = false;
   registerForm: FormGroup;
   validationErrors: string[] = [];
 

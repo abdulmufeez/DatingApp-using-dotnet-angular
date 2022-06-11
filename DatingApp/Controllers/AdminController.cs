@@ -9,13 +9,13 @@ namespace DatingApp.Controllers
 {
     public class AdminController : BaseController
     {
-        private readonly UserManager<ApplicationUser> _userManager;
-        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly UserManager<ApplicationUser> _userManager;        
+        private readonly IUnitOfWork _unitOfWork;
 
         public AdminController(UserManager<ApplicationUser> userManager,
-            IUserProfileRepository userProfileRepository)
+            IUnitOfWork unitOfWork)
         {
-            _userProfileRepository = userProfileRepository;
+            _unitOfWork = unitOfWork;
             _userManager = userManager;
         }       
 
@@ -65,7 +65,7 @@ namespace DatingApp.Controllers
         [HttpPut("disable-account/{userId}")]
         public async Task<ActionResult> DisableAccount(int userId, [FromQuery] string isDisabled)
         {
-            var userProfile = await _userProfileRepository.GetUserByAppIdAsync(userId);
+            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(userId);
 
             if (userProfile is null) return BadRequest("No such user is found");
 
@@ -75,9 +75,9 @@ namespace DatingApp.Controllers
 
             if (isDisabled == "false") userProfile.isDisabled = false;
 
-            _userProfileRepository.Update(userProfile);
+            _unitOfWork.UserProfileRepository.Update(userProfile);
 
-            if (await _userProfileRepository.SaveAllAsync()) return NoContent();
+            if (await _unitOfWork.Complete()) return NoContent();
 
             return BadRequest();
         }

@@ -15,28 +15,25 @@ namespace DatingApp.Controllers
 {
     [Authorize]
     public class LikesController : BaseController
-    {
-        private readonly IUserProfileRepository _userProfileRepository;
-        private readonly ILikesRepository _likeRepository;
-
-        public LikesController(IUserProfileRepository userProfileRepository, ILikesRepository likeRepository)
+    {       
+        private readonly IUnitOfWork _unitOfWork;
+        public LikesController(IUnitOfWork unitOfWork)
         {
-            _userProfileRepository = userProfileRepository;
-            _likeRepository = likeRepository;
+            _unitOfWork = unitOfWork;            
         }
 
         [HttpPost("{likedUserId}")]
         public async Task<ActionResult> AddLike(int likedUserId)
         {
-            var sourceUserProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            var likedUserProfile = await _userProfileRepository.GetUserByIdAsync(likedUserId);
-            var sourceUserProfile = await _likeRepository.GetUserProfileWithLikes(sourceUserProfileId);
+            var sourceUserProfileId = (await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+            var likedUserProfile = await _unitOfWork.UserProfileRepository.GetUserByIdAsync(likedUserId);
+            var sourceUserProfile = await _unitOfWork.LikeRepository.GetUserProfileWithLikes(sourceUserProfileId);
 
             if (likedUserProfile is null) return NotFound();
             // not like by itself
             if (sourceUserProfile.Id == likedUserId) return BadRequest("You cannot like yourself!");
 
-            var userLike = await _likeRepository.GetUserLike(sourceUserProfileId, likedUserProfile.Id);
+            var userLike = await _unitOfWork.LikeRepository.GetUserLike(sourceUserProfileId, likedUserProfile.Id);
             // check if already liked
             if (userLike is not null) return BadRequest($"You already liked {likedUserProfile.KnownAs}");
 
@@ -46,7 +43,7 @@ namespace DatingApp.Controllers
                 LikedUserId = likedUserProfile.Id
             };
             sourceUserProfile.LikedUsers.Add(userLike);
-            if (await _userProfileRepository.SaveAllAsync()) return Ok();
+            if (await _unitOfWork.Complete()) return Ok();
 
             return BadRequest($"Failed to like {likedUserProfile.KnownAs}");
         }
@@ -54,8 +51,8 @@ namespace DatingApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LikeDto>>> GetUserLikes([FromQuery]LikeParams likeParams)        
         {
-            likeParams.UserProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            var userProfiles = await _likeRepository.GetUserLikes(likeParams);
+            likeParams.UserProfileId = (await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+            var userProfiles = await _unitOfWork.LikeRepository.GetUserLikes(likeParams);
             Response.AddPaginationHeader(userProfiles.CurrentPage,userProfiles.PageSize,userProfiles.TotalCount,userProfiles.TotalPages);
             return Ok(userProfiles);
         }

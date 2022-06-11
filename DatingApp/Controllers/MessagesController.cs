@@ -12,17 +12,12 @@ namespace DatingApp.Controllers
     [Authorize]
     public class MessagesController : BaseController
     {
-        private readonly IUserProfileRepository _userProfileRepository;
-        private readonly IMessageRepository _messageRepository;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public MessagesController(IUserProfileRepository userProfileRepository,
-            IMessageRepository messageRepository,
-            IMapper mapper)
+        public MessagesController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _mapper = mapper;
-            _userProfileRepository = userProfileRepository;
-            _messageRepository = messageRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpPost]
@@ -32,8 +27,8 @@ namespace DatingApp.Controllers
             if (currentUserId == createMessageDto.RecipientId)
                 return BadRequest("You cannot send messages to yourself");
 
-            var sender = await _userProfileRepository.GetUserByAppIdAsync(currentUserId);
-            var recipient = await _userProfileRepository.GetUserByIdAsync(createMessageDto.RecipientId);
+            var sender = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(currentUserId);
+            var recipient = await _unitOfWork.UserProfileRepository.GetUserByIdAsync(createMessageDto.RecipientId);
 
             if (recipient is null) return NotFound();
 
@@ -48,8 +43,8 @@ namespace DatingApp.Controllers
                 Content = createMessageDto.Content
             };
 
-            _messageRepository.AddMessage(message);
-            if (await _messageRepository.SaveAllAsync()) return Ok(_mapper.Map<MessageDto>(message));
+            _unitOfWork.MessageRepository.AddMessage(message);
+            if (await _unitOfWork.Complete()) return Ok(_mapper.Map<MessageDto>(message));
 
             return BadRequest();
         }
@@ -57,24 +52,17 @@ namespace DatingApp.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessagesForUser([FromQuery] MessageParams messageParams)
         {
-            messageParams.UserId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            var messages = await _messageRepository.GetMessagesForUser(messageParams);
+            messageParams.UserId = (await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+            var messages = await _unitOfWork.MessageRepository.GetMessagesForUser(messageParams);
             Response.AddPaginationHeader(messages.CurrentPage, messages.PageSize, messages.TotalCount, messages.TotalPages);
             return messages;
-        }
-
-        [HttpGet("thread/{recipientId}")]
-        public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(int recipientId)
-        {
-            var currentUserProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            return Ok(await _messageRepository.GetMessagesThread(currentUserProfileId, recipientId));
-        }
+        }       
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteMessage(int id, [FromQuery] string deletedBoth)
         {
-            var userProfileId = (await _userProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
-            var message = await _messageRepository.GetMessage(id);
+            var userProfileId = (await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+            var message = await _unitOfWork.MessageRepository.GetMessage(id);
 
             if (message.SenderId != userProfileId && message.RecipientId != userProfileId)
                 return Unauthorized();
@@ -86,15 +74,26 @@ namespace DatingApp.Controllers
                 if (message.RecipientId == userProfileId) message.RecipientDeleted = true;
 
                 if (message.SenderDeleted && message.RecipientDeleted)
-                    _messageRepository.DeleteMessage(message);
+                    _unitOfWork.MessageRepository.DeleteMessage(message);
             }
 
             if (deletedBoth == "true" || deletedBoth == "True")
-                _messageRepository.DeleteMessage(message);
+                _unitOfWork.MessageRepository.DeleteMessage(message);
 
-            if (await _messageRepository.SaveAllAsync()) return Ok();
+            if (await _unitOfWork.Complete()) return Ok();
 
             return BadRequest("Problem deleting message");
         }
+
+
+
+        // this is now implememnt in signalr 
+                
+        // [HttpGet("thread/{recipientId}")]
+        // public async Task<ActionResult<IEnumerable<MessageDto>>> GetMessageThread(int recipientId)
+        // {
+        //     var currentUserProfileId = (await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId())).Id;
+        //     return Ok(await _unitOfWork.MessageRepository.GetMessagesThread(currentUserProfileId, recipientId));
+        // }
     }
 }
