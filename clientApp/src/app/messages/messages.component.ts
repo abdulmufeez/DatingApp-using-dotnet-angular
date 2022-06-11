@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Message } from '../_models/message';
 import { MessageParams } from '../_models/messageParams';
 import { Pagination } from '../_models/pagination';
+import { ConfirmWindowService } from '../_services/confirm-window.service';
 import { MessageService } from '../_services/message.service';
 
 @Component({
@@ -16,7 +17,8 @@ export class MessagesComponent implements OnInit {
   messageParams: MessageParams;
   loadingFlag = false;
 
-  constructor(private messageService: MessageService) { 
+  constructor(private messageService: MessageService, 
+      private confirmWindowService: ConfirmWindowService) { 
     this.messageParams = this.messageService.getMessageParams();
   }
 
@@ -35,9 +37,13 @@ export class MessagesComponent implements OnInit {
   }
 
   deleteMessage(id: number, deleteBoth:string){
-    this.messageService.deleteMessage(id, deleteBoth).subscribe(() => {
-      this.messages.splice(this.messages.findIndex(m => m.id === id),1);
-    })
+    this.confirmWindowService.confirm('Delete Message?','This will not undone after').subscribe(result => {
+      if (result){
+        this.messageService.deleteMessage(id, deleteBoth).subscribe(() => {
+          this.messages.splice(this.messages.findIndex(m => m.id === id),1);
+        })
+      }
+    })    
   }
 
   pageChanged(event: any) {
