@@ -67,6 +67,7 @@ namespace DatingApp.Data
         {
             var query = _context.Messages
                 .OrderByDescending(m => m.MessageSent)
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .AsQueryable();
 
             query = messageParams.Container switch 
@@ -76,17 +77,16 @@ namespace DatingApp.Data
                 // default is unread 
                 _ => query.Where(u => u.RecipientId == messageParams.UserId && u.MessageRead == null && u.RecipientDeleted == false)    
             };
-
-            var messages = query.ProjectTo<MessageDto>(_mapper.ConfigurationProvider);
-            return await PagedList<MessageDto>.CreateAsync(messages, messageParams.PageNumber, messageParams.PageSize);
+            
+            return await PagedList<MessageDto>.CreateAsync(query, messageParams.PageNumber, messageParams.PageSize);
         }
 
         public async Task<IEnumerable<MessageDto>> GetMessagesThread(int sourceId, int recipientId)
         {
             // getting messages from both end user
             var messages = await _context.Messages
-                .Include(u => u.Sender).ThenInclude(p => p.Photos)
-                .Include(u => u.Recipient).ThenInclude(p => p.Photos)
+                // .Include(u => u.Sender).ThenInclude(p => p.Photos)
+                // .Include(u => u.Recipient).ThenInclude(p => p.Photos)
                 .Where(m => m.RecipientId == sourceId
                     && m.RecipientDeleted == false
                     && m.SenderId == recipientId
@@ -95,6 +95,7 @@ namespace DatingApp.Data
                     && m.SenderDeleted == false
                 )
                 .OrderBy(m => m.MessageSent)
+                .ProjectTo<MessageDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
             //selecting only unread messages and making them read
@@ -107,7 +108,7 @@ namespace DatingApp.Data
                 }
                 
             }
-            return _mapper.Map<IEnumerable<MessageDto>>(messages);
+            return messages;
         }
 
         public void RemoveConnection(Connection connection)

@@ -98,7 +98,14 @@ namespace DatingApp.Data
         public void Update(UserProfile userProfile)
         {
             _context.Entry(userProfile).State = EntityState.Modified;
-        }        
+        }
+
+        public Task<string> GetUserGender(int id)
+        {
+            return _context.UserProfile.Where(u => u.ApplicationUserId == id)
+                .Select(u => u.Gender)
+                .FirstOrDefaultAsync();
+        }
 
         // ===============================================================================
         // ===============================================================================        
