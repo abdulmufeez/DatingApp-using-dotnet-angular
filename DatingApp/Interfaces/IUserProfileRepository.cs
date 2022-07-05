@@ -9,10 +9,11 @@ namespace DatingApp.Interfaces
         Task<UserProfile> GetUserByIdAsync(int id);   
         Task<UserProfile> GetUserByAppIdAsync(int appId);
         Task<UserProfile> GetUserByUserNameAsync(string username);             
-        Task<UserProfileDto> GetUserProfileByAppIdAsync(int id);        
-        Task<UserProfileDto> GetUserProfileByIdAsync(int id);
-        Task<string> GetUserGender(int id);    
+        Task<UserProfileDto> GetUserProfileByAppIdAsync(int id, bool isCurrentUser);        
+        Task<UserProfileDto> GetUserProfileByIdAsync(int id);            
         Task<PagedList<UserProfileDto>> GetUserProfilesAsync(UserProfileParams userProfileParams);
+        Task<UserProfile> GetUserProfileByPhotoId(int photoId);
+        Task<string> GetUserGender(int id);
         void Add(UserProfile userProfile);
         void Update(UserProfile userProfile);        
     }

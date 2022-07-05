@@ -26,12 +26,12 @@
             <td>{{message.content}}</td>
             <td>
                 <div *ngIf="messageParams.container === 'Outbox'">
-                    <img class="img-circle rounded-circle" src="{{message.recipientPhotoUrl || './assets.user.png'}}"
+                    <img class="img-circle rounded-circle" src="{{message.recipientPhotoUrl || './assets/user.png'}}"
                         alt="{{message.recipientId}}">
                     <strong>{{message.recipientName | titlecase}}</strong>
                 </div>
                 <div *ngIf="messageParams.container !== 'Outbox'">
-                    <img class="img-circle rounded-circle" src="{{message.senderPhotoUrl || './assets.user.png'}}"
+                    <img class="img-circle rounded-circle" src="{{message.senderPhotoUrl || './assets/user.png'}}"
                         alt="{{message.senderId}}">
                     <strong>{{message.senderName | titlecase}}</strong>
                 </div>

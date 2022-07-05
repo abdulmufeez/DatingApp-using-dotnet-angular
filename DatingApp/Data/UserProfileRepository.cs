@@ -45,11 +45,16 @@ namespace DatingApp.Data
             return userProfile;
         }        
 
-        public async Task<UserProfileDto> GetUserProfileByAppIdAsync(int id)
-        {
-            return await _context.UserProfile                
-                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync(model => model.ApplicationUserId == id);
+        public async Task<UserProfileDto> GetUserProfileByAppIdAsync(int id, bool isCurrentUser)
+        {            
+            var query = _context.UserProfile                
+                .Where(model => model.ApplicationUserId == id)
+                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)                
+                .AsQueryable();
+
+            if (isCurrentUser) query = query.IgnoreQueryFilters();
+
+            return await query.FirstOrDefaultAsync();
         }
 
         public async Task<UserProfileDto> GetUserProfileByIdAsync(int id)
@@ -104,6 +109,15 @@ namespace DatingApp.Data
         {
             return _context.UserProfile.Where(u => u.ApplicationUserId == id)
                 .Select(u => u.Gender)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<UserProfile> GetUserProfileByPhotoId(int photoId)
+        {
+            return await _context.UserProfile
+                .Include(p => p.Photos)
+                .IgnoreQueryFilters()
+                .Where(p => p.Photos.Any(p => p.Id == photoId))
                 .FirstOrDefaultAsync();
         }
 

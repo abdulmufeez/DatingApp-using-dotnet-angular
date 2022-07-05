@@ -6,13 +6,19 @@
             <th style="width: 30%"></th>
         </tr>
         <tr *ngFor="let user of users">
-            <td>{{user.username}}</td>
+            <td>
+                <img class="img-circle rounded-circle" src="{{user.photoUrl || './assets/user.png'}}"
+                    alt="{{user.username}}">                
+                <p>{{user.username}}</p>
+            </td>
             <td>{{user.roles}}</td>
             <td>
                 <button (click)="openRolesModal(user)" class=" mx-1 btn btn-outline-info">Edit Roles</button>
-                <button *ngIf="user.isDisabled" (click)="disableAccount(user,'false')" class="mx-1 btn btn-outline-success">Enable Account</button>
-                <button *ngIf="!user.isDisabled" (click)="disableAccount(user,'true')" class="mx-1 btn btn-outline-danger">Disable Account</button>
-            </td>        
+                <button *ngIf="user.isDisabled" (click)="disableAccount(user,'false')"
+                    class="mx-1 btn btn-outline-success">Enable Account</button>
+                <button *ngIf="!user.isDisabled" (click)="disableAccount(user,'true')"
+                    class="mx-1 btn btn-outline-danger">Disable Account</button>
+            </td>
         </tr>
     </table>
 </div>

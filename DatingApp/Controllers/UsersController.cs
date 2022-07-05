@@ -53,7 +53,9 @@ namespace DatingApp.Controllers
         [HttpGet("edit/{id}")]
         public async Task<ActionResult<UserProfileDto>> GetUserByAppId(int id)
         {
-            return await _unitOfWork.UserProfileRepository.GetUserProfileByAppIdAsync(id);
+            var currentUserId = User.GetAppUserId();
+            return await _unitOfWork.UserProfileRepository.GetUserProfileByAppIdAsync(id, 
+                isCurrentUser: currentUserId == id);
         }
 
         [HttpPost("add-profile")]
@@ -98,10 +100,10 @@ namespace DatingApp.Controllers
                 PublicId = result.PublicId
             };
 
-            if (userProfile.Photos.Count == 0)
-            {
-                photo.IsMain = true;
-            }
+            // if (userProfile.Photos.Count == 0)
+            // {
+            //     photo.IsMain = true;
+            // }
 
             userProfile.Photos.Add(photo);
 

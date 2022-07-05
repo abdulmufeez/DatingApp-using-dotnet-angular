@@ -9,9 +9,29 @@ img.img-thumbnail {
 } */
 
 /* hiding text */
-input[type=file]{
+input[type=file] {
     color: transparent;
 }
 
-.my-drop-zone { border: dotted 3px lightgray; }
-.nv-file-over { border: dotted 3px #78C2AD; } /* Default class applied to drop zones on over */
+.my-drop-zone {
+    border: dotted 3px lightgray;
+}
+
+.nv-file-over {
+    border: dotted 3px #78C2AD;
+}
+
+/* Default class applied to drop zones on over */
+
+.not-approved {
+    opacity: 0.2;
+}
+
+.img-wrapper {
+    position: relative
+}
+
+.img-text {
+    position: absolute;
+    bottom: 30%;
+}

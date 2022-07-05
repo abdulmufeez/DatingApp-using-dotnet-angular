@@ -16,6 +16,7 @@ namespace DatingApp.Data
         // because we added identity
         //public DbSet<ApplicationUser> ApplicationUser => Set<ApplicationUser>();
         public DbSet<UserProfile> UserProfile { get; set; }
+        public DbSet<Photo> Photos { get; set; }
         public DbSet<UserLike> Likes { get; set; }
         public DbSet<Message> Messages { get; set; }
         public DbSet<Group> Groups { get; set; }
@@ -67,6 +68,9 @@ namespace DatingApp.Data
                 .HasOne(r => r.Sender)
                 .WithMany(m => m.MessagesSent)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Photo>()
+                .HasQueryFilter(photo => photo.IsApprove);
         }
     }
 }

@@ -7,9 +7,9 @@ namespace DatingApp.Entities
     public class Photo
     {
         public int Id { get; set; }
-        [Required]
-        public string Url { get; set; }        
+        [Required] public string Url { get; set; }        
         public bool IsMain { get; set; }
+        public bool IsApprove { get; set; }
         public string PublicId { get; set; }
 
 
