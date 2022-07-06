@@ -5,7 +5,7 @@
             Tenetur sunt quaerat consectetur fugit atque obcaecati itaque libero necessitatibus id. 
             Magni officia consequuntur aperiam cum quibusdam praesentium voluptates nam, laborum similique.
         </p>
-        <p>All you need to do is sign up, rest is on us.</p>
+        <p *ngIf="!loggedIn">All you need to do is sign up, rest is on us.</p>
         <div class="text-center">
             <button *ngIf="!loggedIn" (click)="registerToggle()" class="btn btn-primary btn-lg mr-2" style="margin-right: 10px;">Sign Up</button>
             <button class="btn btn-warning btn-lg">Learn more..</button>

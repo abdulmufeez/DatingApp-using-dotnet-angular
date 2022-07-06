@@ -21,7 +21,9 @@ builder.Services.AddCors();
 //Identity related service extension
 builder.Services.AddIdentityService(builder.Configuration);
 
-builder.Services.AddSignalR();
+builder.Services.AddSignalR(opt => {
+    opt.EnableDetailedErrors = true;    
+});
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();

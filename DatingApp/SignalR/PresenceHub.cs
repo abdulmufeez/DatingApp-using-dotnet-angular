@@ -7,7 +7,7 @@ namespace DatingApp.SignalR
     public class PresenceHub : Hub
     {
         private readonly PresenceTracker _presenceTracker;
-        private readonly IUserProfileRepository _userProfileRepository;
+        private readonly IUserProfileRepository _userProfileRepository;       
         public PresenceHub(PresenceTracker presenceTracker, IUserProfileRepository userProfileRepository)
         {
             _userProfileRepository = userProfileRepository;

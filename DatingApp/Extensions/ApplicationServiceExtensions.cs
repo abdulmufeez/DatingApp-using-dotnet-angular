@@ -20,7 +20,8 @@ namespace DatingApp.Extensions
             services.AddScoped<ITokenService, TokenService>();
             services.AddScoped<IPhotoService, PhotoService>();
            
-            // services.AddScoped<IUserProfileRepository, UserProfileRepository>();
+           // this is uncommented because of the presence hub
+            services.AddScoped<IUserProfileRepository, UserProfileRepository>();
             // services.AddScoped<ILikesRepository, LikeRepository>();
             // services.AddScoped<IMessageRepository, MessageRepository>();
             // because now we implement IUnitOFWork which will handle all this

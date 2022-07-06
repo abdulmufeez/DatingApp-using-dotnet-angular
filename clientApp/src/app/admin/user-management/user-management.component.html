@@ -6,7 +6,7 @@
             <th style="width: 30%"></th>
         </tr>
         <tr *ngFor="let user of users">
-            <td>
+            <td>                
                 <img class="img-circle rounded-circle" src="{{user.photoUrl || './assets/user.png'}}"
                     alt="{{user.username}}">                
                 <p>{{user.username}}</p>
