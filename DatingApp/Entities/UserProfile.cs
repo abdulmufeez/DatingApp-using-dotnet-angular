@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-
 namespace DatingApp.Entities
 {
     public class UserProfile

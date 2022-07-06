@@ -44,19 +44,14 @@ namespace DatingApp.Controllers
         }
 
         //api/users/2
-        [HttpGet("{id}", Name = "GetUser")]
-        public async Task<ActionResult<UserProfileDto>> GetUser(int id)
+        [HttpGet("{username}", Name = "GetUser")]
+        public async Task<ActionResult<UserProfileDto>> GetUser(string username)
         {
-            return await _unitOfWork.UserProfileRepository.GetUserProfileByIdAsync(id);
-        }
+            var currentUsername = User.GetUsername();
 
-        [HttpGet("edit/{id}")]
-        public async Task<ActionResult<UserProfileDto>> GetUserByAppId(int id)
-        {
-            var currentUserId = User.GetAppUserId();
-            return await _unitOfWork.UserProfileRepository.GetUserProfileByAppIdAsync(id, 
-                isCurrentUser: currentUserId == id);
-        }
+            return await _unitOfWork.UserProfileRepository.GetUserProfileByUsernameAsync(username,
+                isCurrentUser: currentUsername == username);
+        }      
 
         [HttpPost("add-profile")]
         public async Task<ActionResult> AddUser(UserProfileCreateDto userProfileDto)
@@ -88,7 +83,7 @@ namespace DatingApp.Controllers
         [HttpPost("add-photo")]
         public async Task<ActionResult<PhotoDto>> AddPhoto(IFormFile file)
         {
-            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId());
 
             var result = await _photoService.AddPhotoAsync(file);
 
@@ -119,7 +114,7 @@ namespace DatingApp.Controllers
         [HttpPut("set-main-photo/{photoId}")]
         public async Task<ActionResult> SetMainPhoto(int photoId)
         {
-            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId());
 
             var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
 
@@ -139,7 +134,7 @@ namespace DatingApp.Controllers
         [HttpDelete("delete-photo/{photoId}")]
         public async Task<ActionResult> DeletePhoto(int photoId)
         {
-            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByUserNameAsync(User.GetUsername());
+            var userProfile = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId());
             var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
 
             if (photo == null) return NotFound();

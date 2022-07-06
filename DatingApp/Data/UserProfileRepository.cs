@@ -26,42 +26,24 @@ namespace DatingApp.Data
 
         public async Task<UserProfile> GetUserByAppIdAsync(int appId)
         {
-            var userProfile = await _context.UserProfile
+            return await _context.UserProfile
                 .Include(m => m.Photos)
-                .SingleOrDefaultAsync(m => m.ApplicationUserId == appId);
+                .SingleOrDefaultAsync(m => m.ApplicationUserId == appId);        
+        }                
 
-            return userProfile;
-        }
-
-        public async Task<UserProfile> GetUserByUserNameAsync(string username)
+        public async Task<UserProfileDto> GetUserProfileByUsernameAsync(string username, bool isCurrentUser)
         {
             var user = await _context.Users
                 .SingleOrDefaultAsync(m => m.UserName == username);
 
-            var userProfile = await _context.UserProfile
-                .Include(m => m.Photos)
-                .SingleOrDefaultAsync(m => m.ApplicationUserId == user.Id);
-
-            return userProfile;
-        }        
-
-        public async Task<UserProfileDto> GetUserProfileByAppIdAsync(int id, bool isCurrentUser)
-        {            
-            var query = _context.UserProfile                
-                .Where(model => model.ApplicationUserId == id)
+            var query = _context.UserProfile
+                .Where(u => u.ApplicationUserId == user.Id)
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)                
                 .AsQueryable();
 
             if (isCurrentUser) query = query.IgnoreQueryFilters();
 
             return await query.FirstOrDefaultAsync();
-        }
-
-        public async Task<UserProfileDto> GetUserProfileByIdAsync(int id)
-        {
-            return await _context.UserProfile
-                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .SingleOrDefaultAsync(model => model.Id == id);
         }
 
         // project to automatically map to dto leaving one further asign thing behind 
@@ -112,7 +94,7 @@ namespace DatingApp.Data
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<UserProfile> GetUserProfileByPhotoId(int photoId)
+        public async Task<UserProfile> GetUserByPhotoId(int photoId)
         {
             return await _context.UserProfile
                 .Include(p => p.Photos)

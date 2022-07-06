@@ -26,7 +26,7 @@ const routes: Routes = [
     children: [
       {path: 'members', component: MemberListComponent},
       {path: 'member/edit', component: MemberEditComponent, pathMatch: 'full', canDeactivate: [PreventUnsavedChangesGuard]},
-      {path: 'member/:id', component: MemberDetailComponent, pathMatch: 'full', resolve: {member: MemberDetailResolver}},
+      {path: 'member/:username', component: MemberDetailComponent, pathMatch: 'full', resolve: {member: MemberDetailResolver}},
       {path: 'lists', component: ListsComponent},
       {path: 'messages', component: MessagesComponent},
       {path: 'admin', component: AdminPanelComponent, canActivate: [AdminGuard]}

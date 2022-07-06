@@ -4,6 +4,7 @@ export interface Member {
     id:                number;
     firstName:         string;
     lastName:          null;
+    username:          string;
     mainPhotoUrl:      string;
     age:               number;
     knownAs:           string;

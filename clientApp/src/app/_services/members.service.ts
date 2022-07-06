@@ -54,22 +54,16 @@ export class MembersService {
       }))
   }
 
-  getMember(id: string) {
+  getMember(username: string) {
     // combining different array from map(cache) to single array
     const member = [...this.memberCache.values()]
       .reduce((prvArr, currElem) => prvArr.concat(currElem.results), [])
-      .find((member: Member) => member.id.toString() === id);
+      .find((member: Member) => member.id.toString() === username);
 
     // returning member from singled array
     if (member) return of(member);
-    return this.http.get<Member>(this.baseUrl + 'users/' + id);
-  }
-
-  getMemberByAppId(appId: string) {
-    // const member = this.members.find(x => x.applicationUserId.toString() === appId);
-    // if (member !== undefined) return of(member);     
-
-    return this.http.get<Member>(this.baseUrl + 'users/edit/' + appId);
+    
+    return this.http.get<Member>(this.baseUrl + 'users/' + username);
   }
 
   updateMember(member: Member) {

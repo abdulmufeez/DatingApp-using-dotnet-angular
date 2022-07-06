@@ -107,7 +107,7 @@ namespace DatingApp.Controllers
             photo.IsApprove = true;
 
             var user = await
-            _unitOfWork.UserProfileRepository.GetUserProfileByPhotoId(photoId);
+            _unitOfWork.UserProfileRepository.GetUserByPhotoId(photoId);
             if (!user.Photos.Any(x => x.IsMain)) photo.IsMain = true;
 
             await _unitOfWork.Complete();
