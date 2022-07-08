@@ -41,6 +41,10 @@ export class MembersService {
 
     let params = getPaginatedHeaders(userParams.pageNumber, userParams.pageSize);
 
+    if (userParams.search !== ''){
+      params = params.append('search', userParams.search.toString());
+    }
+    params = params.append('disableFiltering', userParams.disableFiltering.toString());
     params = params.append('minAge', userParams.minAge.toString());
     params = params.append('maxAge', userParams.maxAge.toString());
     params = params.append('gender', userParams.gender);
