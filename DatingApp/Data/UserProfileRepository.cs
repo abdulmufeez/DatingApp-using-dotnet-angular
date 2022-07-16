@@ -28,8 +28,8 @@ namespace DatingApp.Data
         {
             return await _context.UserProfile
                 .Include(m => m.Photos)
-                .SingleOrDefaultAsync(m => m.ApplicationUserId == appId);
-        }
+                .SingleOrDefaultAsync(m => m.ApplicationUserId == appId);        
+        }                
 
         public async Task<UserProfileDto> GetUserProfileByUsernameAsync(string username, bool isCurrentUser)
         {
@@ -38,7 +38,7 @@ namespace DatingApp.Data
 
             var query = _context.UserProfile
                 .Where(u => u.ApplicationUserId == user.Id)
-                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)                
                 .AsQueryable();
 
             if (isCurrentUser) query = query.IgnoreQueryFilters();
@@ -50,62 +50,31 @@ namespace DatingApp.Data
         // and there is also no need to use include or anything
         public async Task<PagedList<UserProfileDto>> GetUserProfilesAsync(UserProfileParams userProfileParams)
         {
-            var query = _context.UserProfile
-                .Include(u => u.ApplicationUser)
-                .AsQueryable();
+            var query = _context.UserProfile.AsQueryable();
 
+            // Filtering result
+            query = query.Where(u => u.isDisabled == false);
+            query = query.Where(u => u.ApplicationUserId != userProfileParams.CurrentUserId);
+            query = query.Where(u => u.Gender == userProfileParams.Gender);
 
-            if (!string.IsNullOrWhiteSpace(userProfileParams.Search))
+            var minDob = DateTime.Today.AddYears(-userProfileParams.MaxAge - 1);
+            var maxDob = DateTime.Today.AddYears(-userProfileParams.MinAge);
+
+            query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
+
+            query = userProfileParams.OrderBy switch 
             {
-                if (userProfileParams.DisableFiltering == "true")
-                {
-                    query = query.Where(query => query.ApplicationUser.UserName.Contains(userProfileParams.Search));
-                }
-                if (userProfileParams.DisableFiltering == "false")
-                {
-                    query = query.Where(query => query.ApplicationUser.UserName.Contains(userProfileParams.Search));
-                    // Filtering result
-                    query = query.Where(u => u.isDisabled == false);
-                    query = query.Where(u => u.ApplicationUserId != userProfileParams.CurrentUserId);
-                    query = query.Where(u => u.Gender == userProfileParams.Gender);
-
-                    var minDob = DateTime.Today.AddYears(-userProfileParams.MaxAge - 1);
-                    var maxDob = DateTime.Today.AddYears(-userProfileParams.MinAge);
-
-                    query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
-
-                    query = userProfileParams.OrderBy switch
-                    {
-                        "created" => query.OrderByDescending(u => u.ProfileCreatedAt),
-                        _ => query.OrderByDescending(u => u.LastActive)
-                    };
-                }
-            }
-            else
-            {
-                query = query.Where(u => u.isDisabled == false);
-                query = query.Where(u => u.ApplicationUserId != userProfileParams.CurrentUserId);
-                query = query.Where(u => u.Gender == userProfileParams.Gender);
-
-                var minDob = DateTime.Today.AddYears(-userProfileParams.MaxAge - 1);
-                var maxDob = DateTime.Today.AddYears(-userProfileParams.MinAge);
-
-                query = query.Where(u => u.DateOfBirth >= minDob && u.DateOfBirth <= maxDob);
-
-                query = userProfileParams.OrderBy switch
-                {
-                    "created" => query.OrderByDescending(u => u.ProfileCreatedAt),
-                    _ => query.OrderByDescending(u => u.LastActive)
-                };
-            }
-
+                "created" => query.OrderByDescending(u => u.ProfileCreatedAt),
+                _ => query.OrderByDescending(u => u.LastActive)
+            };
+            
             return await PagedList<UserProfileDto>.CreateAsync(
                 query.ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .AsNoTracking(),
+                .AsNoTracking(), 
                     userProfileParams.PageNumber, userProfileParams.PageSize);
-        }
+        } 
 
-
+        
         public void Add(UserProfile userProfile)
         {
             _context.Entry(userProfile).State = EntityState.Added;

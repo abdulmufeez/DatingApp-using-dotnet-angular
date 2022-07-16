@@ -8,12 +8,5 @@ namespace DatingApp.Helpers
         public int MinAge { get; set; } = 18;
         public int MaxAge { get; set; } = 150;
         public string OrderBy { get; set; } = "lastActive";
-        public string DisableFiltering { get; set; } = "false";
-        private string _search;
-        public string Search 
-        {
-            get => _search;
-            set => _search = value.ToLower();
-        }
     }
 }
