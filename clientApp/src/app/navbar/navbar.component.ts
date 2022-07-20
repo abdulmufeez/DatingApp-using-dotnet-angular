@@ -21,7 +21,7 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void { } 
 
   login() {
-    this.accountService.login(this.model).subscribe(response => {
+    this.accountService.login(this.model).subscribe(() => {
       this.toastr.success('Login Successfully');
       this.router.navigateByUrl('/members');
     })
@@ -29,6 +29,14 @@ export class NavbarComponent implements OnInit {
 
   logout() {
     this.accountService.logout();
-    this.router.navigateByUrl('/');
+    //this.router.navigateByUrl('/');
+    this.reloadComponent('/');
+  }
+
+
+  reloadComponent(url: string) {
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;
+    this.router.onSameUrlNavigation = 'reload';
+    this.router.navigateByUrl(url);
   }
 }

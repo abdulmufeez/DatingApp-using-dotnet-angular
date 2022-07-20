@@ -4,8 +4,7 @@ namespace DatingApp.DTOs
 {
     public class UserProfileDto
     {
-        public int Id { get; set; }
-        [Required]
+        public int Id { get; set; }        
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Username { get; set; }
@@ -17,7 +16,6 @@ namespace DatingApp.DTOs
         public DateTime LastActive { get; set; }
         [Required]
         public string Gender { get; set; }
-        [Required]
         public string Introduction { get; set; }
         public string LookingFor { get; set; }
         public string Interests { get; set; }

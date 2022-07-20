@@ -12,7 +12,7 @@ export class AppComponent implements OnInit {
   title = 'Dating App';  
 
   constructor(private accountService: AccountService, 
-    private hubService: UserPresenceService) {}
+    private presenceHubService: UserPresenceService) {}
 
   ngOnInit(): void {
     //when angular start everything here is also started    
@@ -22,8 +22,8 @@ export class AppComponent implements OnInit {
   setCurrentUser(){
     const user: User = JSON.parse(localStorage.getItem('user.info'));
     if (user) {
-      this.accountService.setCurrentUser(user);
-      this.hubService.createHubConnection(user);  
+      this.accountService.setCurrentUser(user);       
+      this.presenceHubService.createHubConnection(user); 
     }    
   }
     

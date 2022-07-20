@@ -55,13 +55,12 @@ namespace DatingApp.Controllers
 
         [HttpPost("add-profile")]
         public async Task<ActionResult> AddUser(UserProfileCreateDto userProfileDto)
-        {
-            userProfileDto.ApplicationUserId = User.GetAppUserId();
+        {            
             var userProfile = _mapper.Map<UserProfile>(userProfileDto);            
             
             _unitOfWork.UserProfileRepository.Add(userProfile);
 
-            if (await _unitOfWork.Complete()) return Ok(_mapper.Map<UserProfileDto>(userProfile));
+            if (await _unitOfWork.Complete()) return Ok();
 
             return BadRequest("Problem adding Profile");
         }
@@ -117,6 +116,8 @@ namespace DatingApp.Controllers
             var userProfile = await _unitOfWork.UserProfileRepository.GetUserByAppIdAsync(User.GetAppUserId());
 
             var photo = userProfile.Photos.SingleOrDefault(p => p.Id == photoId);
+
+            if (!photo.IsApprove) return BadRequest("This has to be approve before set to main");
 
             if (photo.IsMain) return BadRequest("This Photo is already a main photo");
 

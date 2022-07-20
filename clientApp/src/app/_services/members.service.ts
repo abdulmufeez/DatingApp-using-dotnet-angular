@@ -34,10 +34,34 @@ export class MembersService {
     this.likeParams = new LikeParams();
   }
 
-  getMembers(userParams: UserParams) {
-    //getting data from cache
+  getMembers(userParams: UserParams) {    
+    // let params = getPaginatedHeaders(userParams.pageNumber, userParams.pageSize);
+
+    // params = params.append('minAge', userParams.minAge.toString());
+    // params = params.append('maxAge', userParams.maxAge.toString());
+    // params = params.append('gender', userParams.gender);
+    // params = params.append('orderBy', userParams.orderBy);
+
+    // //getting data from cache
+    // var response = this.memberCache.get(Object.values(userParams).join('-'));  
+    // if (response) {
+    //   return of(response);
+    // }
+
+    // console.log(params);
+    // console.log(response);
+
+    // return getPaginatedResults<Member[]>(this.baseUrl + 'users', params, this.http)
+    //   // sending data to cache
+    //   .pipe(map(response => {
+    //     this.memberCache.set(Object.values(userParams).join('-'), response.results);
+    //     return response;        
+    //   }))
+
     var response = this.memberCache.get(Object.values(userParams).join('-'));
-    if (response) return of(response);
+    if (response) {
+      return of(response);
+    }
 
     let params = getPaginatedHeaders(userParams.pageNumber, userParams.pageSize);
 
@@ -47,7 +71,6 @@ export class MembersService {
     params = params.append('orderBy', userParams.orderBy);
 
     return getPaginatedResults<Member[]>(this.baseUrl + 'users', params, this.http)
-      // sending data to cache
       .pipe(map(response => {
         this.memberCache.set(Object.values(userParams).join('-'), response);
         return response;

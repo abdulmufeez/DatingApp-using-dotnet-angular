@@ -40,7 +40,7 @@ export class RegisterFormComponent implements OnInit {
   }
 
   register() {
-    this.accountService.register(this.registerForm.value).subscribe(response => {
+    this.accountService.register(this.registerForm.value).subscribe(() => {
       this.toastr.success('Successfully registered');
       this.addProfile = true;
     }, err => {

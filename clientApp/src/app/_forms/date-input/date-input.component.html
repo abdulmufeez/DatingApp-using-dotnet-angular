@@ -1,7 +1,6 @@
 <div class="form-group">
     <input 
         [class.is-invalid]="ngControl.touched && ngControl.invalid"
-        [class.is-valid]="ngControl.touched && ngControl.valid"
         type="text"
         class="form-control" 
         [formControl]='$any(ngControl.control)'

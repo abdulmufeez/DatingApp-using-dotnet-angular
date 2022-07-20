@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { Member } from 'src/app/_models/member';
 import { Pagination } from 'src/app/_models/pagination';
 import { User } from 'src/app/_models/User';
@@ -19,11 +20,13 @@ export class MemberListComponent implements OnInit {
 
   genderList = [{ value: 'male', display: 'Males' }, { value: 'female', display: 'Females' }];
 
-  constructor(private memberService: MembersService) {
-    this.userParams = this.memberService.getUserParams();
-   }
+  constructor(private memberService: MembersService, 
+    private router: Router) {    
+    this.router.routeReuseStrategy.shouldReuseRoute = () => false;   
+    this.userParams = this.memberService.getUserParams();    
+   } 
 
-  ngOnInit(): void {
+  ngOnInit(): void {        
     this.loadMembers();
   }
 
@@ -44,5 +47,5 @@ export class MemberListComponent implements OnInit {
     this.userParams.pageNumber = event.page;
     this.memberService.setUserParams(this.userParams); 
     this.loadMembers();
-  }
+  }  
 }

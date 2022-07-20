@@ -79,7 +79,7 @@ export class PhotoEditorComponent implements OnInit {
           this.member.mainPhotoUrl = photo.url;
           this.accountService.setCurrentUser(this.user);
         }
-        this.toastr.success('Photo Uploaded');
+        this.toastr.success('Photo Uploaded Successfully');
       }
     }
   }
@@ -88,7 +88,7 @@ export class PhotoEditorComponent implements OnInit {
     if (confirm('Are you sure want to delete this photo')) {
       this.memberService.deletePhoto(photo.id).subscribe(() => {
         this.member.photos = this.member.photos.filter(p => p.id !== photo.id); // filtering after deleting photo
-        this.toastr.success('Photo Deleted');
+        this.toastr.success('Photo Deleted Successfully');
       })
     }
   }

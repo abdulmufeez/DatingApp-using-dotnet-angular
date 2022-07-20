@@ -15,9 +15,12 @@ export class HomeComponent implements OnInit, OnDestroy {
   registerMode = false;
   loggedIn = false;
 
-  constructor(private accountService: AccountService) {}  
+  constructor(private accountService: AccountService,
+    private router: Router) {}  
 
   ngOnInit(): void {
+    // this is used to implements refresh functionality
+    this.router.onSameUrlNavigation = 'reload';
     this.accountService.currentUser$.pipe(take(1)).subscribe(user => {
       if(user)
       {
