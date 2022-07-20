@@ -69,9 +69,11 @@ namespace DatingApp.SignalR
                 Sender = sender,
                 SenderId = sender.Id,
                 SenderName = sender.KnownAs,
+                SenderUsername = sender.ApplicationUser.UserName,
                 Recipient = recipient,
                 RecipientId = recipient.Id,
                 RecipientName = recipient.KnownAs,
+                RecipientUsername = recipient.ApplicationUser.UserName,
                 Content = createMessageDto.Content
             };
 

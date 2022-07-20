@@ -92,19 +92,14 @@ namespace DatingApp.Controllers
             {
                 Url = result.SecureUrl.AbsoluteUri,
                 PublicId = result.PublicId
-            };
-
-            // if (userProfile.Photos.Count == 0)
-            // {
-            //     photo.IsMain = true;
-            // }
+            };            
 
             userProfile.Photos.Add(photo);
 
             if (await _unitOfWork.Complete())
             {
                 // this will include the location in headers where you get the photos
-                return CreatedAtRoute("GetUser", new { id = userProfile.Id }, _mapper.Map<PhotoDto>(photo));
+                return CreatedAtRoute("GetUser", new { username = userProfile.ApplicationUser.UserName }, _mapper.Map<PhotoDto>(photo));
             }
 
             return BadRequest("Problem Adding Photo");
@@ -127,7 +122,7 @@ namespace DatingApp.Controllers
 
             photo.IsMain = true;
 
-            if (await _unitOfWork.Complete()) return NoContent();
+            if (await _unitOfWork.Complete()) return NoContent();            
 
             return BadRequest("Failed to set main photo");
         }
@@ -147,7 +142,8 @@ namespace DatingApp.Controllers
                 if (result.Error != null) return BadRequest(result.Error.Message);
             }
             userProfile.Photos.Remove(photo);
-            if (await _unitOfWork.Complete()) return NoContent();
+            
+            if (await _unitOfWork.Complete()) return NoContent();            
 
             return BadRequest("Failed to delete the photo");
         }

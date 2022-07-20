@@ -21,29 +21,33 @@ namespace DatingApp.Data
 
         public async Task<UserProfile> GetUserByIdAsync(int id)
         {
-            return await _context.UserProfile.FindAsync(id);
+            return await _context.UserProfile
+                .Include(m => m.ApplicationUser)
+                .Include(m => m.Photos)
+                .SingleOrDefaultAsync(m => m.Id == id);
         }
 
         public async Task<UserProfile> GetUserByAppIdAsync(int appId)
         {
             return await _context.UserProfile
+                .Include(m => m.ApplicationUser)
                 .Include(m => m.Photos)
                 .SingleOrDefaultAsync(m => m.ApplicationUserId == appId);
         }
 
         public async Task<UserProfileDto> GetUserProfileByUsernameAsync(string username, bool isCurrentUser)
         {
-            var user = await _context.Users
-                .SingleOrDefaultAsync(m => m.UserName == username);
-
-            var query = _context.UserProfile
-                .Where(u => u.ApplicationUserId == user.Id)
+            var user = _context.UserProfile
+                .Include(u => u.ApplicationUser)
+                //.Include(u => u.Photos)                
+                .Where(u => u.ApplicationUser.UserName == username)
                 .ProjectTo<UserProfileDto>(_mapper.ConfigurationProvider)
-                .AsQueryable();
+                .AsNoTracking()
+                .AsQueryable();            
 
-            if (isCurrentUser) query = query.IgnoreQueryFilters();
+            if (isCurrentUser) user = user.IgnoreQueryFilters();
 
-            return await query.FirstOrDefaultAsync();
+            return await user.FirstOrDefaultAsync();
         }
 
         // project to automatically map to dto leaving one further asign thing behind 
@@ -109,6 +113,14 @@ namespace DatingApp.Data
                 .Include(p => p.Photos)
                 .IgnoreQueryFilters()
                 .Where(p => p.Photos.Any(p => p.Id == photoId))
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<int> GetUserProfileId(int appId)
+        {
+            return await _context.UserProfile
+                .Where(u => u.ApplicationUserId == appId)
+                .Select(u => u.Id)
                 .FirstOrDefaultAsync();
         }
 

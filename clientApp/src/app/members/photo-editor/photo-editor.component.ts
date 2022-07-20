@@ -34,7 +34,7 @@ export class PhotoEditorComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.initilizeUploader();
+    this.initilizeUploader();    
   }
 
   setMainPhoto(photo: Photo) {

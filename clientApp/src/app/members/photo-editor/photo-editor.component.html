@@ -1,18 +1,13 @@
 <div class="row">
-    <div class="col-2 d-flex flex-column" *ngFor="let photo of member.photos">                
-        <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1 mx-1">                
+    <div class="col-2 d-flex flex-column" *ngFor="let photo of member.photos">
+        <img src="{{photo.url}}" alt="{{photo.url}}" class="img-thumbnail p-1 mx-1">
         <div class="d-flex mx-1">
-            <button 
-                [disabled]="photo.isMain && !photo.isApproved"        
-                (click)="setMainPhoto(photo)"
+            <button [disabled]="photo.isMain" (click)="setMainPhoto(photo)"
                 [ngClass]='photo.isMain ? "btn-success active" : "btn-outline-success"'
-                class="btn btn-sm flex-grow-1 mx-1"
-            >Main</button>
-            <button 
-                [disabled]="photo.isMain && !photo.isApproved"                
-                (click)="deletePhoto(photo)"
-                class="btn btn-sm btn-danger flex-grow-1 mx-1"
-            ><i class="fa fa-trash"></i></button>
+                class="btn btn-sm flex-grow-1 mx-1">Main</button>
+            <button [disabled]="photo.isMain" (click)="deletePhoto(photo)"
+                class="btn btn-sm btn-danger flex-grow-1 mx-1">
+                <i class="fa fa-trash"></i></button>
         </div>
     </div>
 </div>
@@ -36,15 +31,15 @@
             Another drop zone
         </div> -->
 
-        <div class="mt2">
-            Multiple Photos
-            <input [disabled]="isMemberDisabled" type="file" ng2FileSelect [uploader]="uploader" multiple />
+        <div class="my-1">
+            Select Photos
+            <input class="mt-2"  [disabled]="isMemberDisabled" type="file" ng2FileSelect [uploader]="uploader" multiple />
         </div>
 
-        <div class="mt-2">
+        <!-- <div class="mt-2">
             Single Photo
             <input [disabled]="isMemberDisabled" type="file" ng2FileSelect [uploader]="uploader" />
-        </div>
+        </div> -->
     </div>
 
     <!-- *ngIf="uploader?.queue?.length" -->
