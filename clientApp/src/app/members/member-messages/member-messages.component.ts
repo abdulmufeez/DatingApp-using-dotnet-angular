@@ -36,7 +36,9 @@ export class MemberMessagesComponent implements OnInit {
     this.confirmWindowService.confirm('Delete Message?','This will not undone after').subscribe(result => {
       if (result){
         this.messageService.deleteMessage(id, deleteBoth).subscribe(() => {
-          this.messages.splice(this.messages.findIndex(m => m.id === id),1);
+          this.messages.splice(this.messages.findIndex(m => m.id === id), 1);
+          // let index = this.messages.findIndex(m => m.id === id);
+          // this.messages.splice(index, 1);
         })
       }
     })    

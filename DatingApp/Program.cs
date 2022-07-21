@@ -77,10 +77,15 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 
+// app.UseDefaultFiles();
+// app.UseStaticFiles();
+
 app.MapControllers();
 
 // this where all hub register
 app.MapHub<PresenceHub>("hubs/presence");
 app.MapHub<MessageHub>("hubs/message");
+
+//app.MapFallbackToController("Index","Fallback"); 
 
 app.Run();
